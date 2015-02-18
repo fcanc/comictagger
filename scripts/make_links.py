@@ -1,24 +1,23 @@
 #!/usr/bin/python
-"""
-make some tree structures and symbolic links to comic files based on metadata
-oragnizing by date and series, in different trees
+"""Make symlinks to comics in a folder tree
+
+Create some tree structures and symbolic links to comic files based on
+metadata organizing by date and series, in different trees.
 """
 
-"""
-Copyright 2012  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-	http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import sys
 import os
@@ -54,19 +53,19 @@ def main():
         print >> sys.stderr, "Sorry, this script works only on UNIX systems"
 
     if len(sys.argv) < 3:
-        print >> sys.stderr, "usage:  {0} comic_root link_root".format(
+        print >> sys.stderr, "Usage: {0} [comic_root] [link_root]".format(
             sys.argv[0])
         return
 
     comic_root = sys.argv[1]
     link_root = sys.argv[2]
 
-    print "root is : ", comic_root
+    print "Root is: ", comic_root
     filelist = utils.get_recursive_filelist([comic_root])
     make_folder(link_root)
 
-    # first find all comics with metadata
-    print "reading in all comics..."
+    # First find all comics with metadata
+    print "Reading in all comics..."
     comic_list = []
     max_name_len = 2
     for filename in filelist:
@@ -83,12 +82,12 @@ def main():
     print >> sys.stderr, fmt_str.format("")
     print "Found {0} tagged comics.".format(len(comic_list))
 
-    # walk through the comic list and add subdirs and links for each one
+    # Walk through the comic list and add subdirs and links for each one
     for filename, md in comic_list:
         print >> sys.stderr, fmt_str.format(filename) + "\r",
         sys.stderr.flush()
 
-        # do date organizing:
+        # Do date organizing:
         if md.month is not None:
             month_str = "{0:02d}".format(int(md.month))
         else:
@@ -98,10 +97,10 @@ def main():
         make_link(
             filename, os.path.join(date_folder, os.path.basename(filename)))
 
-        # do publisher/series organizing:
+        # Do publisher/series organizing:
         fixed_series_name = md.series
         if fixed_series_name is not None:
-            # some tweaks to keep various filesystems happy
+            # Some tweaks to keep various filesystems happy
             fixed_series_name = fixed_series_name.replace("/", "-")
             fixed_series_name = fixed_series_name.replace("?", "")
         series_folder = os.path.join(

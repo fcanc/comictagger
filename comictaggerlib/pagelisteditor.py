@@ -1,22 +1,18 @@
-"""
-A PyQt4 widget for editing the page list info
-"""
+"""A PyQt4 widget for editing the page list info"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import os
 
@@ -40,12 +36,12 @@ def itemMoveEvents(widget):
         def eventFilter(self, obj, event):
 
             if obj == widget:
-                # print(event.type())
+                #print(event.type())
                 if event.type() == QEvent.ChildRemoved:
-                    # print("ChildRemoved")
+                    #print("ChildRemoved")
                     self.mysignal.emit("finish")
                 if event.type() == QEvent.ChildAdded:
-                    # print("ChildAdded")
+                    #print("ChildAdded")
                     self.mysignal.emit("start")
                     return True
 
@@ -210,7 +206,7 @@ class PageListEditor(QWidget):
             page_dict['Type'] = str(t)
 
         item = self.listWidget.item(row)
-        # wrap the dict in a tuple to keep from being converted to QStrings
+        # Wrap the dict in a tuple to keep from being converted to QStrings
         item.setData(Qt.UserRole, (page_dict,))
         item.setText(self.listEntryText(page_dict))
 
@@ -225,7 +221,7 @@ class PageListEditor(QWidget):
         self.listWidget.clear()
         for p in pages_list:
             item = QListWidgetItem(self.listEntryText(p))
-            # wrap the dict in a tuple to keep from being converted to QStrings
+            # Wrap the dict in a tuple to keep from being converted to QStrings
             item.setData(Qt.UserRole, (p,))
 
             self.listWidget.addItem(item)
@@ -253,8 +249,7 @@ class PageListEditor(QWidget):
 
     def setMetadataStyle(self, data_style):
 
-        # depending on the current data style, certain fields are disabled
-
+        # Depending on the current data style, certain fields are disabled
         inactive_color = QColor(255, 170, 150)
         active_palette = self.comboBox.palette()
 
@@ -280,6 +275,6 @@ class PageListEditor(QWidget):
         elif data_style == MetaDataStyle.CoMet:
             pass
 
-        # make sure combo is disabled when no list
+        # Make sure combo is disabled when no list
         if self.comic_archive is None:
             self.comboBox.setEnabled(False)

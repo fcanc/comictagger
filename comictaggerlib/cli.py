@@ -1,24 +1,19 @@
 #!/usr/bin/python
+"""ComicTagger CLI functions"""
 
-"""
-Comic tagger CLI functions
-"""
-
-"""
-Copyright 2013  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2013-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import sys
 import signal
@@ -61,12 +56,10 @@ class OnlineMatchResults():
         self.writeFailures = []
         self.fetchDataFailures = []
 
-#-----------------------------
-
 
 def actual_issue_data_fetch(match, settings, opts):
 
-    # now get the particular issue data
+    # Now get the particular issue data
     try:
         comicVine = ComicVineTalker()
         comicVine.wait_for_rate_limit = opts.wait_and_retry_on_rate_limit
@@ -85,7 +78,7 @@ def actual_issue_data_fetch(match, settings, opts):
 def actual_metadata_save(ca, opts, md):
 
     if not opts.dryrun:
-        # write out the new data
+        # Write out the new data
         if not ca.writeMetadata(md, opts.data_style):
             print >> sys.stderr, "The tag save seemed to fail!"
             return False
@@ -103,7 +96,7 @@ def actual_metadata_save(ca, opts, md):
 def display_match_set_for_choice(label, match_set, opts, settings):
     print(u"{0} -- {1}:".format(match_set.filename, label))
 
-    # sort match list by year
+    # Sort match list by year
     match_set.matches.sort(key=lambda k: k['year'])
 
     for (counter, m) in enumerate(match_set.matches):
@@ -125,8 +118,8 @@ def display_match_set_for_choice(label, match_set, opts, settings):
                 break
         if i != 's':
             i = int(i) - 1
-            # save the data!
-            # we know at this point, that the file is all good to go
+            # Save the data!
+            # We know at this point, that the file is all good to go
             ca = ComicArchive(match_set.filename, settings.rar_exe_path)
             md = create_local_metadata(
                 opts, ca, ca.hasMetadata(opts.data_style))
@@ -137,7 +130,7 @@ def display_match_set_for_choice(label, match_set, opts, settings):
 
 
 def post_process_matches(match_results, opts, settings):
-    # now go through the match results
+    # Now go through the match results
     if opts.show_save_summary:
         if len(match_results.goodMatches) > 0:
             print("\nSuccessful matches:\n------------------")
@@ -160,7 +153,7 @@ def post_process_matches(match_results, opts, settings):
                 print(f)
 
     if not opts.show_save_summary and not opts.interactive:
-        # just quit if we're not interactive or showing the summary
+        # Just quit if we're not interactive or showing the summary
         return
 
     if len(match_results.multipleMatches) > 0:
@@ -205,11 +198,11 @@ def create_local_metadata(opts, ca, has_desired_tags):
     if has_desired_tags:
         md = ca.readMetadata(opts.data_style)
 
-    # now, overlay the parsed filename info
+    # Now, overlay the parsed filename info
     if opts.parse_filename:
         md.overlay(ca.metadataFromFilename())
 
-    # finally, use explicit stuff
+    # Finally, use explicit stuff
     if opts.metadata is not None:
         md.overlay(opts.metadata)
 
@@ -231,8 +224,8 @@ def process_file_cli(filename, opts, settings, match_results):
             filename + "  is not a comic archive!"
         return
 
-    # if not ca.isWritableForStyle(opts.data_style) and (opts.delete_tags or
-    # opts.save_tags or opts.rename_file):
+    #if not ca.isWritableForStyle(opts.data_style) and (
+    #       opts.delete_tags or opts.save_tags or opts.rename_file):
     if not ca.isWritable() and (
             opts.delete_tags or opts.copy_tags or opts.save_tags or opts.rename_file):
         print >> sys.stderr, "This archive is not writable for that tag type"
@@ -324,7 +317,7 @@ def process_file_cli(filename, opts, settings, match_results):
                         u"{0}: Removed {1} tags.".format(filename, style_name))
             else:
                 print(
-                    u"{0}: dry-run. {1} tags not removed".format(filename, style_name))
+                    u"{0}: dry-run. {1} tags not removed.".format(filename, style_name))
         else:
             print(u"{0}: This archive doesn't have {1} tags to remove.".format(
                 filename, style_name))
@@ -377,10 +370,10 @@ def process_file_cli(filename, opts, settings, match_results):
             if opts.assume_issue_is_one_if_not_set:
                 md.issue = "1"
 
-        # now, search online
+        # Now, search online
         if opts.search_online:
             if opts.issue_id is not None:
-                # we were given the actual ID to search with
+                # We were given the actual ID to search with
                 try:
                     comicVine = ComicVineTalker()
                     comicVine.wait_for_rate_limit = opts.wait_and_retry_on_rate_limit
@@ -411,7 +404,7 @@ def process_file_cli(filename, opts, settings, match_results):
                     if opts.verbose:
                         IssueIdentifier.defaultWriteOutput(text)
 
-                # use our overlayed MD struct to search
+                # Use our overlayed MD struct to search
                 ii.setAdditionalMetadata(md)
                 ii.onlyUseAdditionalMetaData = True
                 ii.waitAndRetryOnRateLimit = opts.wait_and_retry_on_rate_limit
@@ -461,9 +454,9 @@ def process_file_cli(filename, opts, settings, match_results):
                     match_results.noMatches.append(filename)
                     return
 
-                # we got here, so we have a single match
+                # We got here, so we have a single match
 
-                # now get the particular issue data
+                # Now get the particular issue data
                 cv_md = actual_issue_data_fetch(matches[0], settings, opts)
                 if cv_md is None:
                     match_results.fetchDataFailures.append(filename)
@@ -471,7 +464,7 @@ def process_file_cli(filename, opts, settings, match_results):
 
             md.overlay(cv_md)
 
-        # ok, done building our metadata. time to save
+        # Ok, done building our metadata. It's time to save
         if not actual_metadata_save(ca, opts, md):
             match_results.writeFailures.append(filename)
         else:
@@ -558,7 +551,7 @@ def process_file_cli(filename, opts, settings, match_results):
                     else:
                         delete_success = True
             else:
-                # last export failed, so remove the zip, if it exists
+                # Last export failed, so remove the zip, if it exists
                 if os.path.lexists(new_file):
                     os.remove(new_file)
         else:

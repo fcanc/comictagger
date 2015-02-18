@@ -1,23 +1,19 @@
 # coding=utf-8
-"""
-Some generic utilities
-"""
+"""Some generic utilities"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import sys
 import os
@@ -42,10 +38,10 @@ def get_actual_preferred_encoding():
 
 def fix_output_encoding():
     if not UtilsVars.already_fixed_encoding:
-        # this reads the environment and inits the right locale
+        # This reads the environment and inits the right locale
         locale.setlocale(locale.LC_ALL, "")
 
-        # try to make stdout/stderr encodings happy for unicode printing
+        # Try to make stdout/stderr encodings happy for unicode printing
         preferred_encoding = get_actual_preferred_encoding()
         sys.stdout = codecs.getwriter(preferred_encoding)(sys.stdout)
         sys.stderr = codecs.getwriter(preferred_encoding)(sys.stderr)
@@ -54,25 +50,26 @@ def fix_output_encoding():
 
 def get_recursive_filelist(pathlist):
     """Get a recursive list of of all files under all path items in the list"""
+
     filename_encoding = sys.getfilesystemencoding()
     filelist = []
     for p in pathlist:
-        # if path is a folder, walk it recursivly, and all files underneath
+        # If path is a folder, walk it recursively, and all files underneath
         if isinstance(p, str):
-            # make sure string is unicode
+            # Make sure string is unicode
             p = p.decode(filename_encoding)  # , 'replace')
         elif not isinstance(p, unicode):
-            # it's probably a QString
+            # It's probably a QString
             p = unicode(p)
 
         if os.path.isdir(p):
             for root, dirs, files in os.walk(p):
                 for f in files:
                     if isinstance(f, str):
-                        # make sure string is unicode
+                        # Make sure string is unicode
                         f = f.decode(filename_encoding, 'replace')
                     elif not isinstance(f, unicode):
-                        # it's probably a QString
+                        # It's probably a QString
                         f = unicode(f)
                     filelist.append(os.path.join(root, f))
         else:
@@ -92,9 +89,9 @@ def listToString(l):
 
 
 def addtopath(dirname):
-    if dirname is not None and dirname != "":
 
-        # verify that path doesn't already contain the given dirname
+    if dirname is not None and dirname != "":
+        # Verify that path doesn't already contain the given dirname
         tmpdirname = re.escape(dirname)
         pattern = r"{sep}{dir}$|^{dir}{sep}|{sep}{dir}{sep}|^{dir}$".format(
             dir=tmpdirname, sep=os.pathsep)
@@ -103,7 +100,7 @@ def addtopath(dirname):
         if not match:
             os.environ['PATH'] = dirname + os.pathsep + os.environ['PATH']
 
-# returns executable path, if it exists
+    # Returns executable path, if it exists
 
 
 def which(program):
@@ -139,7 +136,7 @@ def removearticles(text):
     newText = newText.replace(",", "")
     newText = newText.replace("-", " ")
 
-    # since the CV api changed, searches for series names with periods
+    # Since the CV api changed, searches for series names with periods
     # now explicity require the period to be in the search key,
     # so the line below is removed (for now)
     #newText = newText.replace(".", "")
@@ -149,7 +146,7 @@ def removearticles(text):
 
 def unique_file(file_name):
     counter = 1
-    # returns ('/path/file', '.ext')
+    # Returns ('/path/file', '.ext')
     file_name_parts = os.path.splitext(file_name)
     while True:
         if not os.path.lexists(file_name):
@@ -161,7 +158,7 @@ def unique_file(file_name):
 
 # -o- coding: utf-8 -o-
 # ISO639 python dict
-# oficial list in http://www.loc.gov/standards/iso639-2/php/code_list.php
+# Official list in http://www.loc.gov/standards/iso639-2/php/code_list.php
 
 lang_dict = {
     'ab': 'Abkhaz',
@@ -611,13 +608,15 @@ if qt_available:
         widget.setFont(f)
 
     def centerWindowOnScreen(window):
+        """Center the window on screen.
+
+        This implemention will handle the window being resized or the
+        screen resolution changing.
         """
-        Center the window on screen. This implemention will handle the window
-        being resized or the screen resolution changing.
-        """
+
         # Get the current screens' dimensions...
         screen = QtGui.QDesktopWidget().screenGeometry()
-        # ... and get this windows' dimensions
+        # ...and get this windows' dimensions
         mysize = window.geometry()
         # The horizontal position is calulated as screenwidth - windowwidth /2
         hpos = (screen.width() - window.width()) / 2
@@ -634,7 +633,7 @@ if qt_available:
 
         # Get the current screens' dimensions...
         main_window_size = top_level.geometry()
-        # ... and get this windows' dimensions
+        # ...and get this windows' dimensions
         mysize = window.geometry()
         # The horizontal position is calulated as screenwidth - windowwidth /2
         hpos = (main_window_size.width() - window.width()) / 2
@@ -658,7 +657,7 @@ if qt_available:
         if not success:
             try:
                 if pil_available:
-                    #  Qt doesn't understand the format, but maybe PIL does
+                    # Qt doesn't understand the format, but maybe PIL does
                     # so try to convert the image data to uncompressed tiff
                     # format
                     im = Image.open(StringIO.StringIO(image_data))
@@ -668,7 +667,7 @@ if qt_available:
                     success = True
             except Exception as e:
                 pass
-        # if still nothing, go with default image
+        # If still nothing, go with default image
         if not success:
             img.load(ComicTaggerSettings.getGraphic('nocover.png'))
         return img

@@ -1,25 +1,24 @@
 #!/usr/bin/python
-"""
+"""Create comic archives removing pages marked as ad and deleted
+
 Create new comic archives from old one, removing  pages marked as ads
-and deleted. Walks recursivly through the given folders.  Originals
-are kept in a subfolder at the level of the original
+and deleted. Walks recursively through the given folders. Originals
+are kept in a subfolder at the level of the original.
 """
 
-"""
-Copyright 2013  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-	http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2013-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import sys
 import os
@@ -39,16 +38,16 @@ def main():
     utils.fix_output_encoding()
     settings = ComicTaggerSettings()
 
-    # this can only work with files with ComicRack tags
+    # This can only work with files with ComicRack tags
     style = MetaDataStyle.CIX
 
     if len(sys.argv) < 2:
-        print >> sys.stderr, "usage:  {0} comic_folder ".format(sys.argv[0])
+        print >> sys.stderr, "Usage: {0} [comic_folder]".format(sys.argv[0])
         return
 
     filelist = utils.get_recursive_filelist(sys.argv[1:])
 
-    # first read in CIX metadata from all files, make a list of candidates
+    # First read in CIX metadata from all files, make a list of candidates
     modify_list = []
     for filename in filelist:
 
@@ -62,18 +61,18 @@ def main():
                         modify_list.append((filename, md))
                         break
 
-    # now actually process those files
+    # Now actually process those files
     for filename, md in modify_list:
         ca = ComicArchive(filename, settings.rar_exe_path)
         curr_folder = os.path.dirname(filename)
         curr_subfolder = os.path.join(curr_folder, subfolder_name)
 
-        # skip any of our generated subfolders...
+        # Skip any of our generated subfolders...
         if os.path.basename(curr_folder) == subfolder_name:
             continue
         sys.stdout.write("Removing unwanted pages from " + filename)
 
-        # verify that we can write to current folder
+        # Verify that we can write to current folder
         if not os.access(filename, os.W_OK):
             print "Can't move: {0}: skipped!".format(filename)
             continue
@@ -87,14 +86,14 @@ def main():
             print "Can't write to the subfolder here: {0}: skipped!".format(filename)
             continue
 
-        # generate a new file with temp name
+        # Generate a new file with temp name
         tmp_fd, tmp_name = tempfile.mkstemp(dir=os.path.dirname(filename))
         os.close(tmp_fd)
 
         try:
             zout = zipfile.ZipFile(tmp_name, 'w')
 
-            # now read in all the pages from the old one, except the ones we
+            # Now read in all the pages from the old one, except the ones we
             # want to skip
             new_num = 0
             new_pages = list()
@@ -113,7 +112,7 @@ def main():
                     new_name = "page{0:04d}{1}".format(new_num, ext)
                     zout.writestr(new_name, buffer)
 
-                    # create new page entry
+                    # Create new page entry
                     new_p = dict()
                     new_p['Image'] = str(new_num)
                     if 'Type' in p:
@@ -121,7 +120,7 @@ def main():
                     new_pages.append(new_p)
                     new_num += 1
 
-            # preserve the old comment
+            # Preserve the old comment
             comment = ca.archiver.getArchiveComment()
             if comment is not None:
                 zout.comment = ca.archiver.getArchiveComment()
@@ -134,11 +133,11 @@ def main():
         else:
             zout.close()
 
-            # Success!  Now move the files
+            # Success! Now move the files
             shutil.move(filename, curr_subfolder)
             os.rename(tmp_name, filename)
             # TODO: We might have converted a rar to a zip, and should probably change
-            #  the extension, as needed.
+            # the extension, as needed.
 
             print "Done!".format(filename)
 

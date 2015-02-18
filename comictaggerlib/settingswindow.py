@@ -1,22 +1,18 @@
-"""
-A PyQT4 dialog to enter app settings
-"""
+"""A PyQT4 dialog to enter app settings"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import platform
 import os
@@ -31,28 +27,28 @@ import utils
 
 
 windowsRarHelp = """
-                 <html><head/><body><p>In order to write to CBR/RAR archives,
-                 you will need to have the tools from
-                 <a href="http://www.win-rar.com/download.html">
-                 <span style=" text-decoration: underline; color:#0000ff;">WinRAR</span>
-                 </a> installed. </p></body></html>
-                """
+            <html><head/><body><p>In order to write to CBR/RAR archives,
+            you will need to have the tools from
+            <a href="http://www.win-rar.com/download.html">
+            <span style=" text-decoration: underline; color:#0000ff;">WinRAR</span>
+            </a> installed. </p></body></html>
+            """
 
 linuxRarHelp = """
-               <html><head/><body><p>In order to read/write to CBR/RAR archives,
-               you will need to have the shareware tools from WinRar installed.
-               Your package manager should have unrar, and probably rar.
-               If not, download them <a href="http://www.win-rar.com/download.html">
-               <span style=" text-decoration: underline; color:#0000ff;">here</span>
-               </a>, and install in your path. </p></body></html>
-               """
+            <html><head/><body><p>In order to read/write to CBR/RAR archives,
+            you will need to have the shareware tools from WinRar installed.
+            Your package manager should have unrar, and probably rar.
+            If not, download them <a href="http://www.win-rar.com/download.html">
+            <span style=" text-decoration: underline; color:#0000ff;">here</span>
+            </a>, and install in your path. </p></body></html>
+            """
 macRarHelp = """
-                 <html><head/><body><p>In order to read/write to CBR/RAR archives,
-                 you will need the shareware tools from
-                 <a href="http://www.win-rar.com/download.html">
-                 <span style=" text-decoration: underline; color:#0000ff;">WinRAR</span>
-                 </a>. </p></body></html>
-                """
+            <html><head/><body><p>In order to read/write to CBR/RAR archives,
+            you will need the shareware tools from
+            <a href="http://www.win-rar.com/download.html">
+            <span style=" text-decoration: underline; color:#0000ff;">WinRAR</span>
+            </a>. </p></body></html>
+            """
 
 
 class SettingsWindow(QtGui.QDialog):

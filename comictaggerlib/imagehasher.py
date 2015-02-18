@@ -1,22 +1,19 @@
-"""
-A pthyon class to manage creating image content hashes, and calculate hamming distances
+"""A class to manage image content hashes, and calculate hamming distances
 """
 
-"""
-Copyright 2013  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2013-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import StringIO
 import sys
@@ -47,7 +44,7 @@ class ImageHasher(object):
                     self.image = Image.open(StringIO.StringIO(data))
             except:
                 print("Image data seems corrupted!")
-                # just generate a bogus image
+                # Just generate a bogus image
                 self.image = Image.new("L", (1, 1))
 
     def average_hash(self):
@@ -67,20 +64,20 @@ class ImageHasher(object):
 
         bitlist = map(compare_value_to_avg, pixels)
 
-        # build up an int value from the bit list, one bit at a time
+        # Build up an int value from the bit list, one bit at a time
         def set_bit(x, idx_val):
             (idx, val) = idx_val
             return (x | (val << idx))
 
         result = reduce(set_bit, enumerate(bitlist), 0)
 
-        # print("{0:016x}".format(result))
+        #print("{0:016x}".format(result))
         return result
 
     def average_hash2(self):
         pass
         """
-        # Got this one from somewhere on the net.  Not a clue how the 'convolve2d'
+        # Got this one from somewhere on the net. Not a clue how the 'convolve2d'
         # works!
 
         from numpy import array
@@ -178,20 +175,21 @@ class ImageHasher(object):
         return result
         """
 
-    # accepts 2 hashes (longs or hex strings) and returns the hamming distance
 
     @staticmethod
     def hamming_distance(h1, h2):
+        """Accepts 2 hashes (longs or hex strings) and returns the hamming distance"""
+
         if isinstance(h1, long) or isinstance(h1, int):
             n1 = h1
             n2 = h2
         else:
-            # convert hex strings to ints
+            # Convert hex strings to ints
             n1 = long(h1, 16)
             n2 = long(h2, 16)
 
         # xor the two numbers
         n = n1 ^ n2
 
-        # count up the 1's in the binary string
+        # Count up the 1's in the binary string
         return sum(b == '1' for b in bin(n)[2:])

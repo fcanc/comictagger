@@ -1,22 +1,18 @@
-"""
-A PyQT4 dialog to confirm and set options for auto-tag
-"""
+"""A PyQT4 dialog to confirm and set options for auto-tag"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import os
 
@@ -68,21 +64,20 @@ class AutoTagStartWindow(QtGui.QDialog):
             self.cbxWaitForRateLimit.setCheckState(QtCore.Qt.Checked)
 
         nlmtTip = (
-            """ <html>The <b>Name Length Match Tolerance</b> is for eliminating automatic
-                search matches that are too long compared to your series name search. The higher
-                it is, the more likely to have a good match, but each search will take longer and
-                use more bandwidth. Too low, and only the very closest lexical matches will be
-                explored.</html>""")
+                """<html>The <b>Name Length Match Tolerance</b> is for eliminating
+                automatic search matches that are too long compared to your series name
+                search. The higher it is, the more likely to have a good match, but each
+                search will take longer and use more bandwidth. Too low, and only the
+                very closest lexical matches will be explored.</html>""")
 
         self.leNameLengthMatchTolerance.setToolTip(nlmtTip)
 
         ssTip = (
-            """<html>
-            The <b>series search string</b> specifies the search string to be used for all selected archives.
-            Use this when trying to match archives with hard-to-parse or incorrect filenames.  All archives selected
-            should be from the same series.
-            </html>"""
-        )
+                """<html>The <b>series search string</b> specifies the search string
+                to be used for all selected archives. Use this when trying to match
+                archives with hard-to-parse or incorrect filenames. All archives
+                selected should be from the same series. </html>""")
+
         self.leSearchString.setToolTip(ssTip)
         self.cbxSpecifySearchString.setToolTip(ssTip)
 
@@ -117,7 +112,7 @@ class AutoTagStartWindow(QtGui.QDialog):
             self.leNameLengthMatchTolerance.text())
         self.waitAndRetryOnRateLimit = self.cbxWaitForRateLimit.isChecked()
 
-        # persist some settings
+        # Persist some settings
         self.settings.save_on_low_confidence = self.autoSaveOnLow
         self.settings.dont_use_year_when_identifying = self.dontUseYear
         self.settings.assume_1_if_no_issue_num = self.assumeIssueOne

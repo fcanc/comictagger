@@ -1,24 +1,22 @@
+"""A PyQt4 widget to display cover images
+
+Display cover images from either a local archive, or from ComicVine.
+TODO: This should be re-factored using subclasses!
 """
-A PyQt4 widget display cover images from either local archive, or from ComicVine
 
-(TODO: This should be re-factored using subclasses!)
-"""
-
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import os
 
@@ -36,7 +34,7 @@ from imagepopup import ImagePopup
 import utils
 
 
-# helper func to allow a label to be clickable
+# Helper func to allow a label to be clickable
 def clickable(widget):
 
     class Filter(QObject):
@@ -167,15 +165,15 @@ class CoverImageWidget(QWidget):
         self.imageCount = len(self.url_list)
         self.updateContent()
 
-        # defer the alt cover search
+        # Defer the alt cover search
         QTimer.singleShot(1, self.startAltCoverSearch)
 
     def startAltCoverSearch(self):
 
-        # now we need to get the list of alt cover URLs
+        # Now we need to get the list of alt cover URLs
         self.label.setText("Searching for alt. covers...")
 
-        # page URL should already be cached, so no need to defer
+        # Page URL should already be cached, so no need to defer
         self.comicVine = ComicVineTalker()
         issue_page_url = self.comicVine.fetchIssuePageURL(self.issue_id)
         self.comicVine.altUrlListFetchComplete.connect(
@@ -246,7 +244,7 @@ class CoverImageWidget(QWidget):
         self.cover_fetcher.fetch(self.url_list[self.imageIndex])
         #print("ATB cover fetch started...")
 
-    # called when the image is done loading from internet
+    # Called when the image is done loading from internet
     def coverRemoteFetchComplete(self, image_data, issue_id):
         img = utils.getQImageFromData(image_data)
         self.current_pixmap = QPixmap(img)
@@ -278,13 +276,13 @@ class CoverImageWidget(QWidget):
                 resize_event.oldSize().width()
             delta_h = resize_event.size().height() - \
                 resize_event.oldSize().height()
-            # print "ATB resizeEvent deltas", resize_event.size().width(),
-            # resize_event.size().height()
+            #print "ATB resizeEvent deltas", resize_event.size().width(),
+            #resize_event.size().height()
             self.setDisplayPixmap(delta_w, delta_h)
 
     def setDisplayPixmap(self, delta_w, delta_h):
-            # the deltas let us know what the new width and height of the label
-            # will be
+        # The deltas let us know what the new width and height of the label
+        # will be
         """
         new_h = self.frame.height() + delta_h
         new_w = self.frame.width() + delta_w
@@ -308,16 +306,16 @@ class CoverImageWidget(QWidget):
         if new_w < 0:
             new_w = 0
 
-        # print "ATB setDisplayPixmap deltas", delta_w , delta_h
-        # print "ATB self.frame", frame_w, frame_h
-        # print "ATB new size", new_w, new_h
+        #print "ATB setDisplayPixmap deltas", delta_w , delta_h
+        #print "ATB self.frame", frame_w, frame_h
+        #print "ATB new size", new_w, new_h
 
-        # scale the pixmap to fit in the frame
+        # Scale the pixmap to fit in the frame
         scaled_pixmap = self.current_pixmap.scaled(
             new_w, new_h, Qt.KeepAspectRatio)
         self.lblImage.setPixmap(scaled_pixmap)
 
-        # move and resize the label to be centered in the fame
+        # Move and resize the label to be centered in the fame
         img_w = scaled_pixmap.width()
         img_h = scaled_pixmap.height()
         self.lblImage.resize(img_w, img_h)

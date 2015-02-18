@@ -1,22 +1,18 @@
-"""
-A python class to manage caching of data from Comic Vine
-"""
+"""A class to manage caching of data from ComicVine"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 from pprint import pprint
 import sqlite3 as lite
@@ -37,7 +33,7 @@ class ComicVineCacher:
         self.version_file = os.path.join(
             self.settings_folder, "cache_version.txt")
 
-        # verify that cache is from same version as this one
+        # Verify that cache is from same version as this one
         data = ""
         try:
             with open(self.version_file, 'rb') as f:
@@ -63,20 +59,19 @@ class ComicVineCacher:
 
     def create_cache_db(self):
 
-        # create the version file
+        # Create the version file
         with open(self.version_file, 'w') as f:
             f.write(ctversion.version)
 
-        # this will wipe out any existing version
+        # This will wipe out any existing version
         open(self.db_file, 'w').close()
 
         con = lite.connect(self.db_file)
 
-        # create tables
+        # Create tables
         with con:
 
             cur = con.cursor()
-            # name,id,start_year,publisher,image,description,count_of_issues
             cur.execute(
                 "CREATE TABLE VolumeSearchCache(" +
                 "search_term TEXT," +
@@ -128,12 +123,12 @@ class ComicVineCacher:
             con.text_factory = unicode
             cur = con.cursor()
 
-            # remove all previous entries with this search term
+            # Remove all previous entries with this search term
             cur.execute(
                 "DELETE FROM VolumeSearchCache WHERE search_term = ?", [
                     search_term.lower()])
 
-            # now add in new results
+            # Now add in new results
             for record in cv_search_results:
                 timestamp = datetime.datetime.now()
 
@@ -168,17 +163,18 @@ class ComicVineCacher:
             con.text_factory = unicode
             cur = con.cursor()
 
-            # purge stale search results
+            # Purge stale search results
             a_day_ago = datetime.datetime.today() - datetime.timedelta(days=1)
             cur.execute(
                 "DELETE FROM VolumeSearchCache WHERE timestamp  < ?", [
                     str(a_day_ago)])
 
-            # fetch
+            # Fetch
             cur.execute(
                 "SELECT * FROM VolumeSearchCache WHERE search_term=?", [search_term.lower()])
             rows = cur.fetchall()
-            # now process the results
+
+            # Now process the results
             for record in rows:
 
                 result = dict()
@@ -204,11 +200,11 @@ class ComicVineCacher:
             con.text_factory = unicode
             cur = con.cursor()
 
-            # remove all previous entries with this search term
+            # Remove all previous entries with this search term
             cur.execute("DELETE FROM AltCovers WHERE issue_id = ?", [issue_id])
 
             url_list_str = utils.listToString(url_list)
-            # now add in new record
+            # Now add in new record
             cur.execute("INSERT INTO AltCovers " +
                         "(issue_id, url_list) " +
                         "VALUES(?, ?)",
@@ -223,7 +219,7 @@ class ComicVineCacher:
             cur = con.cursor()
             con.text_factory = unicode
 
-            # purge stale issue info - probably issue data won't change
+            # Purge stale issue info - probably issue data won't change
             # much....
             a_month_ago = datetime.datetime.today() - \
                 datetime.timedelta(days=30)
@@ -280,7 +276,7 @@ class ComicVineCacher:
 
             timestamp = datetime.datetime.now()
 
-            # add in issues
+            # Add in issues
 
             for issue in cv_volume_issues:
 
@@ -306,12 +302,12 @@ class ComicVineCacher:
             cur = con.cursor()
             con.text_factory = unicode
 
-            # purge stale volume info
+            # Purge stale volume info
             a_week_ago = datetime.datetime.today() - datetime.timedelta(days=7)
             cur.execute(
                 "DELETE FROM Volumes WHERE timestamp  < ?", [str(a_week_ago)])
 
-            # fetch
+            # Fetch
             cur.execute(
                 "SELECT id,name,publisher,count_of_issues,start_year FROM Volumes WHERE id = ?",
                 [volume_id])
@@ -323,7 +319,7 @@ class ComicVineCacher:
 
             result = dict()
 
-            # since ID is primary key, there is only one row
+            # Since ID is primary key, there is only one row
             result['id'] = row[0]
             result['name'] = row[1]
             result['publisher'] = dict()
@@ -343,13 +339,13 @@ class ComicVineCacher:
             cur = con.cursor()
             con.text_factory = unicode
 
-            # purge stale issue info - probably issue data won't change
+            # Purge stale issue info - probably issue data won't change
             # much....
             a_week_ago = datetime.datetime.today() - datetime.timedelta(days=7)
             cur.execute(
                 "DELETE FROM Issues WHERE timestamp  < ?", [str(a_week_ago)])
 
-            # fetch
+            # Fetch
             results = list()
 
             cur.execute(
@@ -357,7 +353,7 @@ class ComicVineCacher:
                 [volume_id])
             rows = cur.fetchall()
 
-            # now process the results
+            # Now process the results
             for row in rows:
                 record = dict()
 
@@ -430,12 +426,10 @@ class ComicVineCacher:
             return details
 
     def upsert(self, cur, tablename, pkname, pkval, data):
-        """
-        This does an insert if the given PK doesn't exist, and an update it if does
-        """
+        """This does an insert if the given PK doesn't exist, and an update if it does"""
 
-        # TODO - look into checking if UPDATE is needed
-        # TODO - should the cursor be created here, and not up the stack?
+        # TODO: look into checking if UPDATE is needed
+        # TODO: should the cursor be created here, and not up the stack?
 
         ins_count = len(data) + 1
 

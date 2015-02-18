@@ -1,23 +1,19 @@
 #!/usr/bin/python
-"""
-fix the comic file names using a list of transforms
-"""
+"""Fix the comic file names using a list of transforms"""
 
-"""
-Copyright 2013  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-	http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2013-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import sys
 import os
@@ -36,25 +32,25 @@ def parse_args():
     input_args = sys.argv[1:]
 
     parser = argparse.ArgumentParser(
-        description='a script to rename comic files')
+        description='A script to rename comic files')
     parser.add_argument(
         '-t',
         '--transforms',
         metavar='xformfile',
-        help="the file with transforms")
+        help="The file with transforms")
     parser.add_argument(
         '-n',
         '--noconfirm',
         action='store_true',
-        help="don't confirm before rename")
+        help="Don't confirm before rename")
     parser.add_argument('paths', metavar='PATH', type=str,
-                        nargs='+', help='path to look for comic files')
+                        nargs='+', help='Path to look for comic files')
     parsed_args = parser.parse_args(input_args)
 
     return parsed_args
 
 
-def caclulate_rename(ca, md, settings):
+def calculate_rename(ca, md, settings):
 
     new_ext = None  # default
     if settings.rename_extension_based_on_archive:
@@ -95,7 +91,7 @@ def main():
 
     parsed_args = parse_args()
 
-    # parsed_args.noconfirm
+    #parsed_args.noconfirm
     if parsed_args.transforms is not None:
         print "Reading in transforms from:", parsed_args.transforms
         json_data = open(parsed_args.transforms).read()
@@ -108,14 +104,14 @@ def main():
 
     filelist = utils.get_recursive_filelist(parsed_args.paths)
 
-    # first find all comics
+    # First find all comics
     print "reading in all comics..."
     comic_list = []
     max_name_len = 2
     fmt_str = ""
     for filename in filelist:
         ca = ComicArchive(filename, settings.rar_exe_path)
-        # do we care if it already has metadata?
+        # Do we care if it already has metadata?
         if ca.seemsToBeAComicArchive() and not ca.hasMetadata(style):
 
             comic_list.append(ca)
@@ -129,22 +125,21 @@ def main():
     print "Found {0} comics.".format(len(comic_list))
 
     modify_list = list()
-    # walk through the comic list fix the filenames
+    # Walk through the comic list fix the filenames
     for ca in comic_list:
 
-        # 1. parse the filename into a MD object
+        # 1. Parse the filename into a MD object
         md = ca.metadataFromFilename()
-        # 2. walk thru list of transforms
+        # 2. Walk thru list of transforms
         if md.series is not None and md.series != "":
             for pattern, replacement in xform_list:
-                # apply each transform
+                # Apply each transform
                 new_series = re.sub(pattern, replacement, md.series)
                 if new_series != md.series:
                     md.series = new_series
-                    new_name = caclulate_rename(ca, md, settings)
+                    new_name = calculate_rename(ca, md, settings)
 
-                    # found a match.  add to proposed list, and bail on this
-                    # file
+                    # Found a match. Add to proposed list, and bail on this file
                     modify_list.append((ca.path, new_name))
                     break
 

@@ -1,32 +1,24 @@
-"""
-Class for handling the odd permutations of an 'issue number' that the comics industry throws at us
+"""Support for mixed digit/string type Issue field
 
-e.g.:
+Class for handling the odd permutations of an 'issue number' that the
+comics industry throws at us
 
-"12"
-"12.1"
-"0"
-"-1"
-"5AU"
-"100-2"
-
+e.g.: "12", "12.1", "0", "-1", "5AU", "100-2"
 """
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import utils
 import math
@@ -37,8 +29,8 @@ class IssueString:
 
     def __init__(self, text):
 
-        #  break up the issue number string into 2 parts: the numeric and suffix string.
-        # (assumes that the numeric portion is always first)
+        # Break up the issue number string into 2 parts: the numeric and
+        # suffix string (assumes that the numeric portion is always first)
 
         self.num = None
         self.suffix = ""
@@ -54,15 +46,15 @@ class IssueString:
 
         text = unicode(text)
 
-        # skip the minus sign if it's first
+        # Skip the minus sign if it's first
         if text[0] == '-':
             start = 1
         else:
             start = 0
 
-        # if it's still not numeric at start skip it
+        # If it's still not numeric at start skip it
         if text[start].isdigit() or text[start] == ".":
-            # walk through the string, look for split point (the first
+            # Walk through the string, look for split point (the first
             # non-numeric)
             decimal_count = 0
             for idx in range(start, len(text)):
@@ -76,12 +68,12 @@ class IssueString:
             else:
                 idx = len(text)
 
-            # move trailing numeric decimal to suffix
+            # Move trailing numeric decimal to suffix
             # (only if there is other junk after)
             if text[idx - 1] == "." and len(text) != idx:
                 idx = idx - 1
 
-            # if there is no numeric after the minus, make the minus part of
+            # If there is no numeric after the minus, make the minus part of
             # the suffix
             if idx == 1 and start == 1:
                 idx = 0
@@ -98,7 +90,7 @@ class IssueString:
         #print("num: {0} suf: {1}".format(self.num, self.suffix))
 
     def asString(self, pad=0):
-        # return the float, left side zero-padded, with suffix attached
+        # Return the float, left side zero-padded, with suffix attached
         if self.num is None:
             return self.suffix
 
@@ -113,7 +105,7 @@ class IssueString:
 
         num_s += self.suffix
 
-        # create padding
+        # Create padding
         padding = ""
         l = len(str(num_int))
         if l < pad:
@@ -126,11 +118,11 @@ class IssueString:
         return num_s
 
     def asFloat(self):
-        # return the float, with no suffix
+        # Return the float, with no suffix
         return self.num
 
     def asInt(self):
-        # return the int version of the float
+        # Return the int version of the float
         if self.num is None:
             return None
         return int(self.num)

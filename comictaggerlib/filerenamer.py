@@ -1,22 +1,18 @@
-"""
-Functions for renaming files based on metadata
-"""
+"""Functions for renaming files based on metadata"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import os
 import re
@@ -48,7 +44,7 @@ class FileRenamer:
         self.template = template
 
     def replaceToken(self, text, value, token):
-        # helper func
+        # Helper func
         def isToken(word):
             return (word[0] == "%" and word[-1:] == "%")
 
@@ -56,12 +52,13 @@ class FileRenamer:
             return text.replace(token, unicode(value))
         else:
             if self.smart_cleanup:
-                # smart cleanup means we want to remove anything appended to token if it's empty
-                # (e.g "#%issue%"  or "v%volume%")
-                # (TODO: This could fail if there is more than one token appended together, I guess)
+                # Smart cleanup means we want to remove anything appended
+                # to token if it's empty (e.g "#%issue%"  or "v%volume%")
+                # TODO: This could fail if there is more than one token
+                # appended together, I guess
                 text_list = text.split()
 
-                # special case for issuecount, remove preceding non-token word,
+                # Special case for issuecount, remove preceding non-token word,
                 # as in "...(of %issuecount%)..."
                 if token == '%issuecount%':
                     for idx, word in enumerate(text_list):
@@ -79,7 +76,7 @@ class FileRenamer:
         new_name = self.template
         preferred_encoding = utils.get_actual_preferred_encoding()
 
-        # print(u"{0}".format(md))
+        #print(u"{0}".format(md))
 
         new_name = self.replaceToken(new_name, md.series, '%series%')
         new_name = self.replaceToken(new_name, md.volume, '%volume%')
@@ -126,23 +123,23 @@ class FileRenamer:
 
         if self.smart_cleanup:
 
-            # remove empty braces,brackets, parentheses
+            # Remove empty braces,brackets, parentheses
             new_name = re.sub("\(\s*[-:]*\s*\)", "", new_name)
             new_name = re.sub("\[\s*[-:]*\s*\]", "", new_name)
             new_name = re.sub("\{\s*[-:]*\s*\}", "", new_name)
 
-            # remove duplicate spaces
+            # Remove duplicate spaces
             new_name = u" ".join(new_name.split())
 
-            # remove remove duplicate -, _,
+            # Remove remove duplicate -, _,
             new_name = re.sub("[-_]{2,}\s+", "-- ", new_name)
             new_name = re.sub("(\s--)+", " --", new_name)
             new_name = re.sub("(\s-)+", " -", new_name)
 
-            # remove dash or double dash at end of line
+            # Remove dash or double dash at end of line
             new_name = re.sub("[-]{1,2}\s*$", "", new_name)
 
-            # remove duplicate spaces (again!)
+            # Remove duplicate spaces (again!)
             new_name = u" ".join(new_name.split())
 
         if ext is None:
@@ -150,7 +147,7 @@ class FileRenamer:
 
         new_name += ext
 
-        # some tweaks to keep various filesystems happy
+        # Some tweaks to keep various filesystems happy
         new_name = new_name.replace("/", "-")
         new_name = new_name.replace(" :", " -")
         new_name = new_name.replace(": ", " - ")

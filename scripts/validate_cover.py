@@ -1,23 +1,19 @@
 #!/usr/bin/python
-"""
-test archive cover against comicvine for a given issue ID
-"""
+"""Test archive cover against ComicVine for a given issue ID"""
 
-"""
-Copyright 2013  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-	http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2013-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import sys
 import os
@@ -35,7 +31,7 @@ def main():
     settings = ComicTaggerSettings()
 
     if len(sys.argv) < 3:
-        print >> sys.stderr, "usage:  {0} comicfile issueid".format(
+        print >> sys.stderr, "Usage: {0} [comicfile] [issueid]".format(
             sys.argv[0])
         return
 
@@ -54,7 +50,7 @@ def main():
 
     ii = IssueIdentifier(ca, settings)
 
-    # calculate the hashes of the first two pages
+    # Calculate the hashes of the first two pages
     cover_image_data = ca.getPage(0)
     cover_hash0 = ii.calculateHash(cover_image_data)
     cover_image_data = ca.getPage(1)
@@ -65,7 +61,7 @@ def main():
     result = ii.getIssueCoverMatchScore(
         comicVine, issue_id, hash_list, useRemoteAlternates=True, useLog=False)
 
-    print "Best cover match score is :", result['score']
+    print "Best cover match score is:", result['score']
     if result['score'] < ii.min_alternate_score_thresh:
         print "Looks like a match!"
     else:

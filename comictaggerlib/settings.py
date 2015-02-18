@@ -1,22 +1,18 @@
-"""
-Settings class for comictagger app
-"""
+"""Settings class for comictagger app"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import os
 import sys
@@ -78,7 +74,7 @@ class ComicTaggerSettings:
         self.check_for_new_version = True
         self.send_usage_stats = False
 
-        # automatic settings
+        # Automatic settings
         self.install_id = uuid.uuid4().hex
         self.last_selected_save_data_style = 0
         self.last_selected_load_data_style = 0
@@ -92,7 +88,7 @@ class ComicTaggerSettings:
         self.last_filelist_sorted_column = -1
         self.last_filelist_sorted_order = 0
 
-        # identifier settings
+        # Identifier settings
         self.id_length_delta_thresh = 5
         self.id_publisher_blacklist = "Panini Comics, Abril, Planeta DeAgostini, Editorial Televisa"
 
@@ -103,10 +99,10 @@ class ComicTaggerSettings:
         self.ask_about_usage_stats = True
         self.show_no_unrar_warning = True
 
-        # filename parsing settings
+        # Filename parsing settings
         self.parse_scan_info = True
 
-        # Comic Vine settings
+        # ComicVine settings
         self.use_series_start_as_volume = False
         self.clear_form_before_populating_from_cv = False
         self.remove_html_tables = False
@@ -152,22 +148,22 @@ class ComicTaggerSettings:
 
         self.settings_file = os.path.join(self.folder, "settings")
 
-        # if config file doesn't exist, write one out
+        # If config file doesn't exist, write one out
         if not os.path.exists(self.settings_file):
             self.save()
         else:
             self.load()
 
-        # take a crack at finding rar exes, if not set already
+        # Take a crack at finding rar exes, if not set already
         if self.rar_exe_path == "":
             if platform.system() == "Windows":
-                # look in some likely places for windows machine
+                # Look in some likely places for Windows machines
                 if os.path.exists("C:\Program Files\WinRAR\Rar.exe"):
                     self.rar_exe_path = "C:\Program Files\WinRAR\Rar.exe"
                 elif os.path.exists("C:\Program Files (x86)\WinRAR\Rar.exe"):
                     self.rar_exe_path = "C:\Program Files (x86)\WinRAR\Rar.exe"
             else:
-                # see if it's in the path of unix user
+                # See if it's in the path of Unix user
                 if utils.which("rar") is not None:
                     self.rar_exe_path = utils.which("rar")
             if self.rar_exe_path != "":
@@ -175,13 +171,13 @@ class ComicTaggerSettings:
 
         if self.unrar_exe_path == "":
             if platform.system() != "Windows":
-                # see if it's in the path of unix user
+                # See if it's in the path of Unix user
                 if utils.which("unrar") is not None:
                     self.unrar_exe_path = utils.which("unrar")
             if self.unrar_exe_path != "":
                 self.save()
 
-        # make sure unrar/rar program is now in the path for the UnRAR class to
+        # Make sure unrar/rar program is now in the path for the UnRAR class to
         # use
         utils.addtopath(os.path.dirname(self.unrar_exe_path))
         utils.addtopath(os.path.dirname(self.rar_exe_path))
@@ -521,6 +517,6 @@ class ComicTaggerSettings:
         with codecs.open(self.settings_file, 'wb', 'utf8') as configfile:
             self.config.write(configfile)
 
-# make sure the basedir is cached, in case we're on windows running a
+# Make sure the basedir is cached, in case we're on windows running a
 # script from frozen binary
 ComicTaggerSettings.baseDir()

@@ -1,7 +1,5 @@
 #!/usr/bin/python
-"""
-find all duplicate comics
-"""
+"""Find all duplicate comics"""
 
 import sys
 
@@ -18,13 +16,13 @@ def main():
     style = MetaDataStyle.CIX
 
     if len(sys.argv) < 2:
-        print >> sys.stderr, "usage:  {0} comic_folder ".format(sys.argv[0])
+        print >> sys.stderr, "Usage: {0} [comic_folder]".format(sys.argv[0])
         return
 
     filelist = utils.get_recursive_filelist(sys.argv[1:])
 
-    # first find all comics with metadata
-    print >> sys.stderr, "reading in all comics..."
+    # First find all comics with metadata
+    print >> sys.stderr, "Reading in all comics..."
     comic_list = []
     fmt_str = ""
     max_name_len = 2
@@ -42,13 +40,13 @@ def main():
     print "Found {0} comics with {1} tags".format(len(comic_list), MetaDataStyle.name[style])
     print "-----------------------------------------------"
 
-    # sort the list by series+issue+year, to put all the dupes together
+    # Sort the list by series+issue+year, to put all the dupes together
     def makeKey(x):
         return "<" + unicode(x[1].series) + u" #" + \
             unicode(x[1].issue) + u" - " + unicode(x[1].year) + ">"
     comic_list.sort(key=makeKey, reverse=False)
 
-    # look for duplicate blocks
+    # Look for duplicate blocks
     dupe_set_list = list()
     dupe_set = list()
     prev_key = ""
@@ -58,13 +56,13 @@ def main():
 
         new_key = makeKey((filename, md))
 
-        # if the new key same as the last, add to to dupe set
+        # If the new key same as the last, add to to dupe set
         if new_key == prev_key:
             dupe_set.append(filename)
 
-        # else we're on a new potential block
+        # Else we're on a new potential block
         else:
-            # only add if the dupe list has 2 or more
+            # Only add if the dupe list has 2 or more
             if len(dupe_set) > 1:
                 dupe_set_list.append(dupe_set)
             dupe_set = list()
@@ -80,7 +78,7 @@ def main():
         md = ca.readMetadata(style)
         print "{0} #{1} ({2})".format(md.series, md.issue, md.year)
         for filename in dupe_set:
-            print "------------->{0}".format(filename)
+            print "---->{0}".format(filename)
 
 if __name__ == '__main__':
     main()

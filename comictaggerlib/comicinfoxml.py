@@ -1,22 +1,18 @@
-"""
-A python class to encapsulate ComicRack's ComicInfo.xml data
-"""
+"""A class to encapsulate ComicRack's ComicInfo.xml data"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 from datetime import datetime
 import zipfile
@@ -61,7 +57,7 @@ class ComicInfoXml:
         return header + ET.tostring(tree.getroot())
 
     def indent(self, elem, level=0):
-        # for making the XML output readable
+        # For making the XML output readable
         i = "\n" + level * "  "
         if len(elem):
             if not elem.text or not elem.text.strip():
@@ -78,15 +74,15 @@ class ComicInfoXml:
 
     def convertMetadataToXML(self, filename, metadata):
 
-        # shorthand for the metadata
+        # Shorthand for the metadata
         md = metadata
 
-        # build a tree structure
+        # Build a tree structure
         root = ET.Element("ComicInfo")
         root.attrib['xmlns:xsi'] = "http://www.w3.org/2001/XMLSchema-instance"
         root.attrib['xmlns:xsd'] = "http://www.w3.org/2001/XMLSchema"
-        # helper func
 
+        # Helper func
         def assign(cix_entry, md_entry):
             if md_entry is not None:
                 ET.SubElement(root, cix_entry).text = u"{0}".format(md_entry)
@@ -107,7 +103,7 @@ class ComicInfoXml:
         assign('Month', md.month)
         assign('Day', md.day)
 
-        # need to specially process the credits, since they are structured
+        # Need to specially process the credits, since they are structured
         # differently than CIX
         credit_writer_list = list()
         credit_penciller_list = list()
@@ -117,7 +113,7 @@ class ComicInfoXml:
         credit_cover_list = list()
         credit_editor_list = list()
 
-        # first, loop thru credits, and build a list for each role that CIX
+        # First, loop thru credits, and build a list for each role that CIX
         # supports
         for credit in metadata.credits:
 
@@ -142,7 +138,7 @@ class ComicInfoXml:
             if credit['role'].lower() in set(self.editor_synonyms):
                 credit_editor_list.append(credit['person'].replace(",", ""))
 
-        # second, convert each list to string, and add to XML struct
+        # Second, convert each list to string, and add to XML struct
         if len(credit_writer_list) > 0:
             node = ET.SubElement(root, 'Writer')
             node.text = utils.listToString(credit_writer_list)
@@ -187,17 +183,17 @@ class ComicInfoXml:
         assign('Locations', md.locations)
         assign('ScanInformation', md.scanInfo)
 
-        #  loop and add the page entries under pages node
+        # Loop and add the page entries under pages node
         if len(md.pages) > 0:
             pages_node = ET.SubElement(root, 'Pages')
             for page_dict in md.pages:
                 page_node = ET.SubElement(pages_node, 'Page')
                 page_node.attrib = page_dict
 
-        # self pretty-print
+        # Self pretty-print
         self.indent(root)
 
-        # wrap it in an ElementTree instance, and save as XML
+        # Wrap it in an ElementTree instance, and save as XML
         tree = ET.ElementTree(root)
         return tree
 
@@ -271,7 +267,7 @@ class ComicInfoXml:
                     for name in n.text.split(','):
                         metadata.addCredit(name.strip(), "Cover")
 
-        # parse page data now
+        # Parse page data now
         pages_node = root.find("Pages")
         if pages_node is not None:
             for page in pages_node:
@@ -285,7 +281,7 @@ class ComicInfoXml:
     def writeToExternalFile(self, filename, metadata):
 
         tree = self.convertMetadataToXML(self, metadata)
-        # ET.dump(tree)
+        #ET.dump(tree)
         tree.write(filename, encoding='utf-8')
 
     def readFromExternalFile(self, filename):

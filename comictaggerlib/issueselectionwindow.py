@@ -1,22 +1,18 @@
-"""
-A PyQT4 dialog to select specific issue from list
-"""
+"""A PyQT4 dialog to select specific issue from list"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import sys
 import os
@@ -82,7 +78,7 @@ class IssueSelectionWindow(QtGui.QDialog):
         self.twList.currentItemChanged.connect(self.currentItemChanged)
         self.twList.cellDoubleClicked.connect(self.cellDoubleClicked)
 
-        # now that the list has been sorted, find the initial record, and
+        # Now that the list has been sorted, find the initial record, and
         # select it
         if self.initial_id is None:
             self.twList.selectRow(0)
@@ -108,7 +104,7 @@ class IssueSelectionWindow(QtGui.QDialog):
             if e.code == ComicVineTalkerException.RateLimit:
                 QtGui.QMessageBox.critical(
                     self,
-                    self.tr("Comic Vine Error"),
+                    self.tr("ComicVine Error"),
                     ComicVineTalker.getRateLimitMessage())
             else:
                 QtGui.QMessageBox.critical(
@@ -137,7 +133,7 @@ class IssueSelectionWindow(QtGui.QDialog):
             item_text = record['cover_date']
             if item_text is None:
                 item_text = ""
-            # remove the day of "YYYY-MM-DD"
+            # Remove the day of "YYYY-MM-DD"
             parts = item_text.split("-")
             if len(parts) > 1:
                 item_text = parts[0] + "-" + parts[1]
@@ -180,7 +176,7 @@ class IssueSelectionWindow(QtGui.QDialog):
         self.issue_id, b = self.twList.item(
             curr.row(), 0).data(QtCore.Qt.UserRole).toInt()
 
-        # list selection was changed, update the the issue cover
+        # List selection has changed, update the issue cover
         for record in self.issue_list:
             if record['id'] == self.issue_id:
                 self.issue_number = record['issue_number']

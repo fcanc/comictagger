@@ -1,22 +1,19 @@
-"""
-CLI options class for comictagger app
-"""
+# coding=utf-8
+"""CLI options class for comictagger app"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import sys
 import getopt
@@ -37,64 +34,71 @@ import utils
 
 
 class Options:
-    help_text = """
-Usage: {0} [OPTION]... [FILE LIST]
+    help_text = """Usage: {0} [option] ... [file [files ...]]
 
 A utility for reading and writing metadata to comic archives.
 
-If no options are given, {0} will run in windowed mode
+If no options are given, {0} will run in windowed mode.
 
- -p, --print                 Print out tag info from file. Specify type (via -t) to get
-                              only info of that tag type.
-     --raw                   With -p, will print out the raw tag block(s) from the file
- -d, --delete                Deletes the tag block of specified type (via -t).
- -c, --copy=SOURCE           Copy the specified source tag block to destination style
-                              specified via -t (potentially lossy operation).
- -s, --save                  Save out tags as specified type (via -t). Must specify also
-                              at least -o, -p, or -m.
-     --nooverwrite           Don't modify tag block if it already exists (relevant for
-                              -s or -c).
- -1, --assume-issue-one      Assume issue number is 1 if not found (relevant for -s).
- -n, --dryrun                Don't actually modify file (only relevant for -d, -s, or -r).
- -t, --type=TYPE             Specify TYPE as either "CR", "CBL", or "COMET" (as either
-                              ComicRack, ComicBookLover, or CoMet style tags,
-                              respectively).
- -f, --parsefilename         Parse the filename to get some info, specifically series
-                              name, issue number, volume, and publication year.
- -i, --interactive           Interactively query the user when there are multiple
-                              matches for an online search.
-     --nosummary             Suppress the default summary after a save operation.
- -o, --online                Search online and attempt to identify file using existing
-                              metadata and images in archive. May be used in conjunction
-                              with -f and -m.
-     --id=ID                 Use the issue ID when searching online. Overrides all other
-                              metadata.
- -m, --metadata=LIST         Explicitly define, as a list, some tags to be used.
-                              e.g."series=Plastic Man , publisher=Quality Comics"
-                                  "series=Kickers^, Inc., issue=1, year=1986"
-                              Name-Value pairs are comma separated. Use a "^" to escape
-                              an "=" or a ",", as shown in the example above.
-                              Some names that can be used: series, issue, issueCount,
-                              year, publisher, title
- -r, --rename                Rename the file based on specified tag style.
-     --noabort               Don't abort save operation when online match is of low
-                              confidence.
- -e, --export-to-zip         Export RAR archive to Zip format.
-     --delete-rar            Delete original RAR archive after successful export to Zip.
-     --abort-on-conflict     Don't export to zip if intended new filename exists
-                              (otherwise, creates a new unique filename).
- -S, --script=FILE           Run an "add-on" python script that uses the comictagger
-                              library for custom processing. Script arguments can follow
-                              the script name.
- -R, --recursive             Recursively include files in sub-folders.
-     --cv-api-key=KEY        Use the given Comic Vine API Key (persisted in settings).
-     --only-set-cv-key       Only set the Comiv Vine API key and quit.
- -w, --wait-on-cv-rate-limit When encountering a Comic Vine rate limit error, wait and
-                              retry query.
- -v, --verbose               Be noisy when doing what it does.
-     --terse                 Don't say much (for print mode).
-     --version               Display version.
- -h, --help                  Display this message.
+-p, --print                 Print out tag info from file. Specify type (via -t)
+                            to get only info of that tag type.
+    --raw                   With -p, will print out the raw tag block(s) from
+                            the file.
+-d, --delete                Deletes the tag block of specified type (via -t).
+-c, --copy=SOURCE           Copy the specified source tag block to destination
+                            style specified via -t (potentially lossy
+                            operation).
+-s, --save                  Save out tags as specified type (via -t). Must
+                            specify also at least -o, -p, or -m.
+    --nooverwrite           Don't modify tag block if it already exists
+                            (relevant for -s or -c).
+-1, --assume-issue-one      Assume issue number is 1 if not found (relevant
+                            for -s).
+-n, --dryrun                Don't actually modify file (only relevant for -d,
+                            -s, or -r).
+-t, --type=TYPE             Specify TYPE as either "CR", "CBL", or "COMET" (as
+                            either ComicRack, ComicBookLover, or CoMet style
+                            tags, respectively).
+-f, --parsefilename         Parse the filename to get some info, specifically
+                            series name, issue number, volume, and publication
+                            year.
+-i, --interactive           Interactively query the user when there are
+                            multiple matches for an online search.
+    --nosummary             Suppress the default summary after a save
+                            operation.
+-o, --online                Search online and attempt to identify file using
+                            existing metadata and images in archive. May be
+                            used in conjunction with -f and -m.
+    --id=ID                 Use the issue ID when searching online. Overrides
+                            all other metadata.
+-m, --metadata=LIST         Explicitly define, as a list, some tags to be used.
+                            e.g."series=Plastic Man , publisher=Quality Comics"
+                                "series=Kickers^, Inc., issue=1, year=1986"
+                            Name-Value pairs are comma separated. Use a "^" to
+                            escape an "=" or a ",", as shown in the example
+                            above. Some names that can be used:
+                            series, issue, issueCount, year, publisher, title
+-r, --rename                Rename the file based on specified tag style.
+    --noabort               Don't abort save operation when online match is of
+                            low confidence.
+-e, --export-to-zip         Export RAR archive to Zip format.
+    --delete-rar            Delete original RAR archive after successful export
+                            to Zip.
+    --abort-on-conflict     Don't export to zip if intended new filename exists
+                            (otherwise, creates a new unique filename).
+-S, --script=FILE           Run an "add-on" python script that uses the
+                            comictagger library for custom processing. Script
+                            arguments can follow the script name.
+-R, --recursive             Recursively include files in sub-folders.
+    --cv-api-key=KEY        Use the given ComicVine API Key (persisted in
+                            settings).
+    --only-set-cv-key       Only set the ComivVine API key and quit.
+-w, --wait-on-cv-rate-limit When encountering a ComicVine rate limit error,
+                            wait and retry query.
+-v, --verbose               Be noisy when doing what it does.
+    --terse                 Don't say much (for print mode).
+    --version               Display version.
+-h, --help                  Display this message.
 
 For more help visit the wiki at: http://code.google.com/p/comictagger/
     """
@@ -192,14 +196,14 @@ For more help visit the wiki at: http://code.google.com/p/comictagger/
             else:
                 md.isEmpty = False
                 setattr(md, key, md_dict[key])
-        # print(md)
+        #print(md)
         return md
 
     def launch_script(self, scriptfile):
-        # we were given a script.  special case for the args:
+        # We were given a script. special case for the args:
         #  1. ignore everthing before the -S,
-        # 2. pass all the ones that follow (including script name) to the
-        # script
+        #  2. pass all the ones that follow (including script name) to
+        #     the script
         script_args = list()
         for idx, arg in enumerate(sys.argv):
             if arg in ['-S', '--script']:
@@ -211,9 +215,9 @@ For more help visit the wiki at: http://code.google.com/p/comictagger/
             print("Can't find {0}".format(scriptfile))
         else:
             # I *think* this makes sense:
-            #  assume the base name of the file is the module name
-            #  add the folder of the given file to the python path
-            #  import module
+            # -assume the base name of the file is the module name
+            # -add the folder of the given file to the python path
+            # -import module
             dirname = os.path.dirname(scriptfile)
             module_name = os.path.splitext(os.path.basename(scriptfile))[0]
             sys.path = [dirname] + sys.path
@@ -225,7 +229,7 @@ For more help visit the wiki at: http://code.google.com/p/comictagger/
                     script.main()
                 else:
                     print(
-                        "Can't find entry point \"main()\" in module \"{0}\"".format(module_name))
+                        "Can't find entry point 'main()' in module '{0}'".format(module_name))
             except Exception as e:
                 print "Script raised an unhandled exception: ", e
                 print(traceback.format_exc())
@@ -236,21 +240,21 @@ For more help visit the wiki at: http://code.google.com/p/comictagger/
 
         if platform.system() == "Darwin" and hasattr(
                 sys, "frozen") and sys.frozen == 1:
-            # remove the PSN ("process serial number") argument from OS/X
+            # Remove the PSN ("process serial number") argument from OS/X
             input_args = [a for a in sys.argv[1:] if "-psn_0_" not in a]
         else:
             input_args = sys.argv[1:]
 
-        # first check if we're launching a script:
+        # First check if we're launching a script:
         for n in range(len(input_args)):
             if (input_args[n] in ["-S", "--script"] and
                     n + 1 < len(input_args)):
-                # insert a "--" which will cause getopt to ignore the remaining args
+                # Insert a "--" which will cause getopt to ignore the remaining args
                 # so they will be passed to the script
                 input_args.insert(n + 2, "--")
                 break
 
-        # parse command line options
+        # Parse command line options
         try:
             opts, args = getopt.getopt(input_args,
                                        "hpdt:fm:vownsrc:ieRS:1",
@@ -333,14 +337,13 @@ For more help visit the wiki at: http://code.google.com/p/comictagger/
                 self.only_set_key = True
             if o == "--version":
                 print(
-                    "ComicTagger {0}:  Copyright (c) 2012-2014 Anthony Beville".format(ctversion.version))
+                    u"ComicTagger {0}:\nCopyright ©2012-2014 Anthony Beville".format(ctversion.version))
                 print(
-                    "Distributed under Apache License 2.0 (http://www.apache.org/licenses/LICENSE-2.0)")
+                    "Distributed under Apache License 2.0\n(http://www.apache.org/licenses/LICENSE-2.0)")
                 new_version = VersionChecker().getLatestVersion("", False)
                 if new_version is not None and new_version != ctversion.version:
                     print("----------------------------------------")
-                    print(
-                        "New version available online: {0}".format(new_version))
+                    print("New version available online: {0}".format(new_version))
                     print("----------------------------------------")
                 sys.exit(0)
             if o in ("-t", "--type"):
@@ -384,7 +387,7 @@ For more help visit the wiki at: http://code.google.com/p/comictagger/
 
         if len(args) > 0:
             if platform.system() == "Windows":
-                # no globbing on windows shell, so do it for them
+                # No globbing on windows shell, so do it for them
                 import glob
                 self.file_list = []
                 for item in args:
@@ -415,8 +418,9 @@ For more help visit the wiki at: http://code.google.com/p/comictagger/
             self.display_msg_and_quit(
                 "Please specify the type to copy to with -t", 1)
 
-        # if self.rename_file and self.data_style is None:
-        #    self.display_msg_and_quit("Please specify the type to use for renaming with -t", 1)
+        #if self.rename_file and self.data_style is None:
+        #    self.display_msg_and_quit(
+        #        "Please specify the type to use for renaming with -t", 1)
 
         if self.recursive:
             self.file_list = utils.get_recursive_filelist(self.file_list)

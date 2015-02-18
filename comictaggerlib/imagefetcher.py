@@ -1,22 +1,18 @@
-"""
-A python class to manage fetching and caching of images by URL
-"""
+"""A class to manage fetching and caching of images by URL"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import sqlite3 as lite
 import os
@@ -86,7 +82,7 @@ class ImageFetcher(QObject):
         self.user_data = user_data
         self.fetched_url = url
 
-        # first look in the DB
+        # First look in the DB
         image_data = self.get_image_from_cache(url)
 
         if blocking:
@@ -97,47 +93,47 @@ class ImageFetcher(QObject):
                     print(e)
                     raise ImageFetcherException("Network Error!")
 
-            # save the image to the cache
+            # Save the image to the cache
             self.add_image_to_cache(self.fetched_url, image_data)
             return image_data
 
         else:
 
-            # if we found it, just emit the signal asap
+            # If we found it, just emit the signal asap
             if image_data is not None:
                 self.fetchComplete.emit(QByteArray(image_data), self.user_data)
                 return
 
-            # didn't find it.  look online
+            # Didn't find it. Look online
             self.nam = QNetworkAccessManager()
             self.nam.finished.connect(self.finishRequest)
             self.nam.get(QNetworkRequest(QUrl(url)))
 
-            # we'll get called back when done...
+            # We'll get called back when done...
 
     def finishRequest(self, reply):
 
-        # read in the image data
+        # Read in the image data
         image_data = reply.readAll()
 
-        # save the image to the cache
+        # Save the image to the cache
         self.add_image_to_cache(self.fetched_url, image_data)
 
         self.fetchComplete.emit(QByteArray(image_data), self.user_data)
 
     def create_image_db(self):
 
-        # this will wipe out any existing version
+        # This will wipe out any existing version
         open(self.db_file, 'w').close()
 
-        # wipe any existing image cache folder too
+        # Wipe any existing image cache folder too
         if os.path.isdir(self.cache_folder):
             shutil.rmtree(self.cache_folder)
         os.makedirs(self.cache_folder)
 
         con = lite.connect(self.db_file)
 
-        # create tables
+        # Create tables
         with con:
 
             cur = con.cursor()
@@ -152,9 +148,7 @@ class ImageFetcher(QObject):
     def add_image_to_cache(self, url, image_data):
 
         con = lite.connect(self.db_file)
-
         with con:
-
             cur = con.cursor()
 
             timestamp = datetime.datetime.now()

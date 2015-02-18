@@ -1,22 +1,18 @@
-"""
-Class to manage modifying metadata specifically for CBL/CBI
-"""
+"""A class to manage modifying metadata specifically for CBL/CBI"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import os
 
@@ -30,7 +26,7 @@ class CBLTransformer:
         self.settings = settings
 
     def apply(self):
-        # helper funcs
+        # Helper funcs
         def append_to_tags_if_unique(item):
             if item.lower() not in (tag.lower() for tag in self.metadata.tags):
                 self.metadata.tags.append(item)
@@ -43,7 +39,7 @@ class CBLTransformer:
 
         if self.settings.assume_lone_credit_is_primary:
 
-            # helper
+            # Helper
             def setLonePrimary(role_list):
                 lone_credit = None
                 count = 0
@@ -58,7 +54,7 @@ class CBLTransformer:
                     lone_credit['primary'] = True
                 return lone_credit, count
 
-            # need to loop three times, once for 'writer', 'artist', and then
+            # Need to loop three times, once for 'writer', 'artist', and then
             # 'penciler' if no artist
             setLonePrimary(['writer'])
             c, count = setLonePrimary(['artist'])

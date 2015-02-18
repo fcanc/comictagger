@@ -1,23 +1,19 @@
 # coding=utf-8
-"""
-The main window of the ComicTagger app
-"""
+"""The main window of the ComicTagger app"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015  Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import sys
 import signal
@@ -92,8 +88,7 @@ class TaggerWindow(QtGui.QMainWindow):
         uic.loadUi(ComicTaggerSettings.getUIFile('taggerwindow.ui'), self)
         self.settings = settings
 
-        #----------------------------------
-        # prevent multiple instances
+        # Prevent multiple instances
         socket = QtNetwork.QLocalSocket(self)
         socket.connectToServer(settings.install_id)
         alive = socket.waitForConnected(3000)
@@ -101,7 +96,7 @@ class TaggerWindow(QtGui.QMainWindow):
             print(
                 "Another application with key [{}] is already running".format(
                     settings.install_id))
-            # send file list to other instance
+            # Send file list to other instance
             if len(file_list) > 0:
                 socket.write(pickle.dumps(file_list))
                 if not socket.waitForBytesWritten(3000):
@@ -109,7 +104,7 @@ class TaggerWindow(QtGui.QMainWindow):
             socket.disconnectFromServer()
             sys.exit()
         else:
-            # listen on a socket to prevent multiple instances
+            # Listen on a socket to prevent multiple instances
             self.socketServer = QtNetwork.QLocalServer(self)
             self.socketServer.newConnection.connect(
                 self.onIncomingSocketConnection)
@@ -127,7 +122,6 @@ class TaggerWindow(QtGui.QMainWindow):
                             self.socketServer.errorString()))
                     sys.exit()
             #print("Registering as single instance with key [{}]".format(settings.install_id))
-        #----------------------------------
 
         self.archiveCoverWidget = CoverImageWidget(
             self.coverImageContainer, CoverImageWidget.ArchiveMode)
@@ -139,7 +133,6 @@ class TaggerWindow(QtGui.QMainWindow):
         gridlayout = QtGui.QGridLayout(self.tabPages)
         gridlayout.addWidget(self.pageListEditor)
 
-        #---------------------------
         self.fileSelectionList = FileSelectionList(
             self.widgetListHolder, self.settings)
         gridlayout = QtGui.QGridLayout(self.widgetListHolder)
@@ -152,7 +145,7 @@ class TaggerWindow(QtGui.QMainWindow):
             self.settings.last_filelist_sorted_column,
             self.settings.last_filelist_sorted_order)
 
-        # we can't specify relative font sizes in the UI designer, so
+        # We can't specify relative font sizes in the UI designer, so
         # walk through all the lablels in the main form, and make them
         # a smidge smaller
         for child in self.scrollAreaWidgetContents.children():
@@ -198,20 +191,20 @@ class TaggerWindow(QtGui.QMainWindow):
         self.leAltIssueNum.setValidator(validator)
         self.leAltIssueCount.setValidator(validator)
 
-        # TODO set up an RE validator for issueNum that allows
+        # TODO: set up an RE validator for issueNum that allows
         # for all sorts of wacky things
 
-        # tweak some control fonts
+        # Tweak some control fonts
         utils.reduceWidgetFontSize(self.lblFilename, 1)
         utils.reduceWidgetFontSize(self.lblArchiveType)
         utils.reduceWidgetFontSize(self.lblTagList)
         utils.reduceWidgetFontSize(self.lblPageCount)
 
-        # make sure some editable comboboxes don't take drop actions
+        # Make sure some editable comboboxes don't take drop actions
         self.cbFormat.lineEdit().setAcceptDrops(False)
         self.cbMaturityRating.lineEdit().setAcceptDrops(False)
 
-        # hook up the callbacks
+        # Hook up the callbacks
         self.cbLoadDataStyle.currentIndexChanged.connect(self.setLoadDataStyle)
         self.cbSaveDataStyle.currentIndexChanged.connect(self.setSaveDataStyle)
         self.btnEditCredit.clicked.connect(self.editCredit)
@@ -253,10 +246,10 @@ class TaggerWindow(QtGui.QMainWindow):
                                                 """
                                 Thanks for trying ComicTagger!<br><br>
                                 Be aware that this is beta-level software, and consider it experimental.
-                                You should use it very carefully when modifying your data files.  As the
+                                You should use it very carefully when modifying your data files. As the
                                 license says, it's "AS IS!"<br><br>
                                 Also, be aware that writing tags to comic archives will change their file hashes,
-                                which has implications with respect to other software packages.  It's best to
+                                which has implications with respect to other software packages. It's best to
                                 use ComicTagger on local copies of your comics.<br><br>
                                 Have fun!
                                 """
@@ -268,7 +261,7 @@ class TaggerWindow(QtGui.QMainWindow):
                 self,
                 self.tr("Anonymous Stats"),
                 self.tr(
-                    "Is it okay if ComicTagger occasionally sends some anonymous usage statistics?  Nothing nefarious, "
+                    "Is it okay if ComicTagger occasionally sends some anonymous usage statistics? Nothing nefarious, "
                     "just trying to get a better idea of how the app is being used.\n\nThanks for your support!"),
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default,
                 QtGui.QMessageBox.No)
@@ -281,7 +274,7 @@ class TaggerWindow(QtGui.QMainWindow):
             self.checkLatestVersionOnline()
 
     def sigint_handler(self, *args):
-        # defer the actual close in the app loop thread
+        # Defer the actual close in the app loop thread
         QtCore.QTimer.singleShot(200, self.close)
 
     def resetApp(self):
@@ -417,7 +410,6 @@ class TaggerWindow(QtGui.QMainWindow):
         self.actionComicTaggerForum.triggered.connect(self.showForum)
 
         # ToolBar
-
         self.actionLoad.setIcon(
             QtGui.QIcon(ComicTaggerSettings.getGraphic('open.png')))
         self.actionLoadFolder.setIcon(
@@ -520,7 +512,7 @@ class TaggerWindow(QtGui.QMainWindow):
                                 os.unlink(ca.path)
 
                         else:
-                            # last export failed, so remove the zip, if it
+                            # Last export failed, so remove the zip, if it
                             # exists
                             failed_list.append(ca.path)
                             if os.path.lexists(export_name):
@@ -561,15 +553,10 @@ class TaggerWindow(QtGui.QMainWindow):
         msgBox.setTextFormat(QtCore.Qt.RichText)
         msgBox.setIconPixmap(
             QtGui.QPixmap(ComicTaggerSettings.getGraphic('about.png')))
-        msgBox.setText("<br><br><br>" +
-                       self.appName +
-                       " v" +
-                       self.version +
-                       "<br>" +
-                       "(c)2014 Anthony Beville<br><br>" +
-                       "<a href='{0}'>{0}</a><br><br>".format(website) +
-                       "<a href='mailto:{0}'>{0}</a><br><br>".format(email) +
-                       "License: <a href='{0}'>{1}</a>".format(license_link, license_name))
+        msgBox.setText("<p><br/><br/><br/>{0} v{1}</p>".format(self.appName, self.version) +
+                       "<p>&copy; 2014 Anthony Beville</p>" +
+                       "<p><a href='{0}'>{0}</a><br/><br/><a href='mailto:{1}'>{1}</a></p>".format(website, email) +
+                       "<p>This software is released under the <a href='{0}'>{1}</a></p>".format(license_link, license_name))
 
         msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
         msgBox.exec_()
@@ -578,7 +565,7 @@ class TaggerWindow(QtGui.QMainWindow):
         self.droppedFiles = None
         if event.mimeData().hasUrls():
 
-            # walk through the URL list and build a file list
+            # Walk through the URL list and build a file list
             for url in event.mimeData().urls():
                 if url.isValid() and url.scheme() == "file":
                     if self.droppedFiles is None:
@@ -589,8 +576,8 @@ class TaggerWindow(QtGui.QMainWindow):
                 event.accept()
 
     def dropEvent(self, event):
-        # if self.dirtyFlagVerification("Open Archive",
-        #                            "If you open a new archive now, data in the form will be lost.  Are you sure?"):
+        #if self.dirtyFlagVerification("Open Archive",
+        #    "If you open a new archive now, data in the form will be lost. Are you sure?"):
         self.fileSelectionList.addPathList(self.droppedFiles)
         event.accept()
 
@@ -636,7 +623,7 @@ class TaggerWindow(QtGui.QMainWindow):
         self.actionRename.setEnabled(False)
         self.actionApplyCBLTransform.setEnabled(False)
 
-        # now, selectively re-enable
+        # Now, selectively re-enable
         if self.comic_archive is not None:
             has_cix = self.comic_archive.hasCIX()
             has_cbi = self.comic_archive.hasCBI()
@@ -712,7 +699,7 @@ class TaggerWindow(QtGui.QMainWindow):
             self.updateAppTitle()
 
     def connectDirtyFlagSignals(self):
-        # recursivly connect the tab form child slots
+        # Recursively connect the tab form child slots
         self.connectChildDirtyFlagSignals(self.tabWidget)
 
     def connectChildDirtyFlagSignals(self, widget):
@@ -726,23 +713,23 @@ class TaggerWindow(QtGui.QMainWindow):
         if (isinstance(widget, QtGui.QCheckBox)):
             widget.stateChanged.connect(self.setDirtyFlag)
 
-        # recursive call on chillun
+        # Recursive call on chillun
         for child in widget.children():
             if child != self.pageListEditor:
                 self.connectChildDirtyFlagSignals(child)
 
     def clearForm(self):
 
-        # get a minty fresh metadata object
+        # Get a minty fresh metadata object
         self.metadata = GenericMetadata()
         if self.comic_archive is not None:
             self.metadata.setDefaultPageList(
                 self.comic_archive.getNumberOfPages())
 
-        # recursivly clear the tab form
+        # Recursively clear the tab form
         self.clearChildren(self.tabWidget)
 
-        # clear the dirty flag, since there is nothing in there now to lose
+        # Clear the dirty flag, since there is nothing in there now to lose
         self.clearDirtyFlag()
 
         self.pageListEditor.setData(self.comic_archive, self.metadata.pages)
@@ -760,14 +747,14 @@ class TaggerWindow(QtGui.QMainWindow):
             while widget.rowCount() > 0:
                 widget.removeRow(0)
 
-        # recursive call on chillun
+        # Recursive call on chillun
         for child in widget.children():
             self.clearChildren(child)
 
     def metadataToForm(self):
-        # copy the the metadata object into to the form
+        # Copy the the metadata object into to the form
 
-        # helper func
+        # Helper function
         def assignText(field, value):
             if value is not None:
                 field.setText(unicode(value))
@@ -898,7 +885,7 @@ class TaggerWindow(QtGui.QMainWindow):
             else:
                 return int(s)
 
-        # copy the data from the form into the metadata
+        # Copy the data from the form into the metadata
         md = self.metadata
         md.series = xlate(self.leSeries.text(), "str")
         md.issue = xlate(self.leIssueNum.text(), "str")
@@ -951,7 +938,7 @@ class TaggerWindow(QtGui.QMainWindow):
         else:
             md.blackAndWhite = False
 
-        # get the credits from the table
+        # Get the credits from the table
         md.credits = list()
         row = 0
         while row < self.twCredits.rowCount():
@@ -1002,8 +989,8 @@ class TaggerWindow(QtGui.QMainWindow):
 
         if (dialog.exec_()):
             fileList = dialog.selectedFiles()
-            # if self.dirtyFlagVerification("Open Archive",
-            #                            "If you open a new archive now, data in the form will be lost.  Are you sure?"):
+            #if self.dirtyFlagVerification("Open Archive",
+            #    "If you open a new archive now, data in the form will be lost. Are you sure?"):
             self.fileSelectionList.addPathList(fileList)
 
     def autoIdentifySearch(self):
@@ -1063,11 +1050,11 @@ class TaggerWindow(QtGui.QMainWindow):
         selector.exec_()
 
         if selector.result():
-            # we should now have a volume ID
+            # We should now have a volume ID
             QtGui.QApplication.setOverrideCursor(
                 QtGui.QCursor(QtCore.Qt.WaitCursor))
 
-            # copy the form onto metadata object
+            # Copy the form onto metadata object
             self.formToMetadata()
 
             try:
@@ -1079,7 +1066,7 @@ class TaggerWindow(QtGui.QMainWindow):
                 if e.code == ComicVineTalkerException.RateLimit:
                     QtGui.QMessageBox.critical(
                         self,
-                        self.tr("Comic Vine Error"),
+                        self.tr("ComicVine Error"),
                         ComicVineTalker.getRateLimitMessage())
                 else:
                     QtGui.QMessageBox.critical(
@@ -1178,7 +1165,7 @@ class TaggerWindow(QtGui.QMainWindow):
         cix_credits = ComicInfoXml().getParseableCredits()
 
         if self.save_data_style == MetaDataStyle.CIX:
-            # loop over credit table, mark selected rows
+            # Loop over credit table, mark selected rows
             r = 0
             while r < self.twCredits.rowCount():
                 if str(self.twCredits.item(r, 1).text()
@@ -1187,12 +1174,12 @@ class TaggerWindow(QtGui.QMainWindow):
                         r, 1).setBackgroundColor(inactive_color)
                 else:
                     self.twCredits.item(r, 1).setBackgroundColor(active_color)
-                # turn off entire primary column
+                # Turn off entire primary column
                 self.twCredits.item(r, 0).setBackgroundColor(inactive_color)
                 r = r + 1
 
         if self.save_data_style == MetaDataStyle.CBI:
-            # loop over credit table, make all active color
+            # Loop over credit table, make all active color
             r = 0
             while r < self.twCredits.rowCount():
                 self.twCredits.item(r, 0).setBackgroundColor(active_color)
@@ -1201,8 +1188,7 @@ class TaggerWindow(QtGui.QMainWindow):
 
     def updateStyleTweaks(self):
 
-        # depending on the current data style, certain fields are disabled
-
+        # Depending on the current data style, certain fields are disabled
         inactive_color = QtGui.QColor(255, 170, 150)
         active_palette = self.leSeries.palette()
 
@@ -1210,13 +1196,12 @@ class TaggerWindow(QtGui.QMainWindow):
         inactive_palette1.setColor(QtGui.QPalette.Base, inactive_color)
 
         inactive_palette2 = self.leSeries.palette()
+        inactive_palette2.setColor(QtGui.QPalette.Base, inactive_color)
 
         inactive_palette3 = self.leSeries.palette()
         inactive_palette3.setColor(QtGui.QPalette.Base, inactive_color)
 
-        inactive_palette3.setColor(QtGui.QPalette.Base, inactive_color)
-
-        # helper func
+        # Helper function
         def enableWidget(item, enable):
             inactive_palette3.setColor(item.backgroundRole(), inactive_color)
             inactive_palette2.setColor(item.backgroundRole(), inactive_color)
@@ -1280,12 +1265,12 @@ class TaggerWindow(QtGui.QMainWindow):
 
     def updateCreditPrimaryFlag(self, row, primary):
 
-        # if we're clearing a flagm do it and quit
+        # If we're clearing a flag do it and quit
         if not primary:
             self.twCredits.item(row, 0).setText("")
             return
 
-        # otherwise, we need to check for, and clear, other primaries with same
+        # Otherwise, we need to check for, and clear, other primaries with same
         # role
         role = str(self.twCredits.item(row, 1).text())
         r = 0
@@ -1318,18 +1303,18 @@ class TaggerWindow(QtGui.QMainWindow):
             new_role, new_name, new_primary = editor.getCredits()
 
             if new_name == name and new_role == role and new_primary == primary:
-                # nothing has changed, just quit
+                # Nothing has changed, just quit
                 return
 
-            # name and role is the same, but primary flag changed
+            # Name and role is the same, but primary flag changed
             if new_name == name and new_role == role:
                 self.updateCreditPrimaryFlag(row, new_primary)
                 return
 
-            # check for dupes
+            # Check for dupes
             ok_to_mod = True
             if self.isDupeCredit(new_role, new_name):
-                # delete the dupe credit from list
+                # Delete the dupe credit from list
                 reply = QtGui.QMessageBox.question(
                     self,
                     self.tr("Duplicate Credit!"),
@@ -1338,23 +1323,23 @@ class TaggerWindow(QtGui.QMainWindow):
                     self.tr("Duplicate"))
 
                 if reply == 0:
-                    # merge
+                    # Merge
                     if action == "edit":
-                        # just remove the row that would be same
+                        # Just remove the row that would be same
                         self.twCredits.removeRow(row)
-                        # TODO -- need to find the row of the dupe, and
-                        # possible change the primary flag
+                        # TODO: need to find the row of the dupe, and
+                        # possibly change the primary flag
 
                     ok_to_mod = False
 
             if ok_to_mod:
-                # modify it
+                # Modify it
                 if action == "edit":
                     self.twCredits.item(row, 1).setText(new_role)
                     self.twCredits.item(row, 2).setText(new_name)
                     self.updateCreditPrimaryFlag(row, new_primary)
                 else:
-                    # add new entry
+                    # Add new entry
                     row = self.twCredits.rowCount()
                     self.addNewCreditEntry(
                         row, new_role, new_name, new_primary)
@@ -1391,14 +1376,14 @@ class TaggerWindow(QtGui.QMainWindow):
                       (screen.height() - size.height()) / 2)
 
     def adjustLoadStyleCombo(self):
-        # select the current style
+        # Select the current style
         if (self.load_data_style == MetaDataStyle.CBI):
             self.cbLoadDataStyle.setCurrentIndex(0)
         elif (self.load_data_style == MetaDataStyle.CIX):
             self.cbLoadDataStyle.setCurrentIndex(1)
 
     def adjustSaveStyleCombo(self):
-        # select the current style
+        # Select the current style
         if (self.save_data_style == MetaDataStyle.CBI):
             self.cbSaveDataStyle.setCurrentIndex(0)
         elif (self.save_data_style == MetaDataStyle.CIX):
@@ -1515,7 +1500,7 @@ class TaggerWindow(QtGui.QMainWindow):
         self.removeTags(MetaDataStyle.CIX)
 
     def removeTags(self, style):
-        # remove the indicated tags from the archive
+        # Remove the indicated tags from the archive
         ca_list = self.fileSelectionList.getSelectedArchiveList()
         has_md_count = 0
         for ca in ca_list:
@@ -1593,7 +1578,7 @@ class TaggerWindow(QtGui.QMainWindow):
                 dlg.exec_()
 
     def copyTags(self):
-        # copy the indicated tags in the archive
+        # Copy the indicated tags in the archive
         ca_list = self.fileSelectionList.getSelectedArchiveList()
         has_src_count = 0
 
@@ -1691,7 +1676,7 @@ class TaggerWindow(QtGui.QMainWindow):
 
     def actualIssueDataFetch(self, match):
 
-        # now get the particular issue data
+        # Now get the particular issue data
         cv_md = None
         QtGui.QApplication.setOverrideCursor(
             QtGui.QCursor(QtCore.Qt.WaitCursor))
@@ -1725,7 +1710,7 @@ class TaggerWindow(QtGui.QMainWindow):
         success = False
         ii = IssueIdentifier(ca, self.settings)
 
-        # read in metadata, and parse file name if not there
+        # Read in metadata, and parse file name if not there
         md = ca.readMetadata(self.save_data_style)
         if md.isEmpty:
             md = ca.metadataFromFilename(self.settings.parse_scan_info)
@@ -1733,7 +1718,7 @@ class TaggerWindow(QtGui.QMainWindow):
                 # remove all leading numbers
                 md.series = re.sub("([\d.]*)(.*)", "\\2", md.series)
 
-        # use the dialog specified search string
+        # Use the dialog specified search string
         if dlg.searchString is not None:
             md.series = dlg.searchString
 
@@ -1797,12 +1782,12 @@ class TaggerWindow(QtGui.QMainWindow):
             self.autoTagLog("Online search: No match found.  Save aborted\n")
             match_results.noMatches.append(ca.path)
         else:
-            #  a single match!
+            # A single match!
             if low_confidence:
                 self.autoTagLog(
                     "Online search: Low confidence match, but saving anyways, as indicated...\n")
 
-            # now get the particular issue data
+            # Now get the particular issue data
             cv_md = self.actualIssueDataFetch(matches[0])
             if cv_md is None:
                 match_results.fetchDataFailures.append(ca.path)
@@ -1856,7 +1841,7 @@ class TaggerWindow(QtGui.QMainWindow):
         self.atprogdialog.setWindowTitle("Auto-Tagging")
 
         self.autoTagLog(
-            u"========================================================================\n")
+            u"==========================================================================\n")
         self.autoTagLog(
             u"Auto-Tagging Started for {0} items\n".format(len(ca_list)))
 
@@ -1866,7 +1851,7 @@ class TaggerWindow(QtGui.QMainWindow):
         archives_to_remove = []
         for ca in ca_list:
             self.autoTagLog(
-                u"============================================================\n")
+                u"==========================================================================\n")
             self.autoTagLog(
                 u"Auto-Tagging {0} of {1}\n".format(prog_idx + 1, len(ca_list)))
             self.autoTagLog(u"{0}\n".format(ca.path))
@@ -2100,7 +2085,7 @@ class TaggerWindow(QtGui.QMainWindow):
             checked = OptionalMessageDialog.msg(
                 self,
                 "New version available!",
-                "New version ({0}) available!<br>(You are currently running {1})<br><br>".format(
+                "A new version ({0}) is available!<br>You are currently running {1}<br><br>".format(
                     new_version,
                     self.version) +
                 "Visit <a href='{0}'>{0}</a> for more info.<br><br>".format(website),
@@ -2110,8 +2095,8 @@ class TaggerWindow(QtGui.QMainWindow):
                 self.settings.dont_notify_about_this_version = new_version
 
     def onIncomingSocketConnection(self):
-        # accept connection from other instance.
-        # read in the file list if they're giving it,
+        # Accept connection from other instance.
+        # Read in the file list if they're giving it,
         # and add to our own list
         localSocket = self.socketServer.nextPendingConnection()
         if localSocket.waitForReadyRead(3000):
@@ -2122,7 +2107,7 @@ class TaggerWindow(QtGui.QMainWindow):
                 if isinstance(obj, list):
                     self.fileSelectionList.addPathList(obj)
         else:
-            # print(localSocket.errorString().toLatin1())
+            #print(localSocket.errorString().toLatin1())
             pass
 
         self.bringToTop()
@@ -2141,7 +2126,7 @@ class TaggerWindow(QtGui.QMainWindow):
                 y = rect[1]
                 w = rect[2] - x
                 h = rect[3] - y
-                # mark it "always on top", just for a moment, to force it to
+                # Mark it "always on top", just for a moment, to force it to
                 # the top
                 win32gui.SetWindowPos(
                     hwnd, win32con.HWND_TOPMOST, x, y, w, h, 0)
@@ -2158,6 +2143,6 @@ class TaggerWindow(QtGui.QMainWindow):
             self.setWindowFlags(
                 flags | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.X11BypassWindowManagerHint)
             QtCore.QCoreApplication.processEvents()
-            # self.show()
-            self.setWindowFlags(flags)
+            #self.show()
+            #self.setWindowFlags(flags)
             self.show()

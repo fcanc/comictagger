@@ -1,27 +1,23 @@
-"""
- A python class for internal metadata storage
+"""A class for internal metadata storage
 
- The goal of this class is to handle ALL the data that might come from various
- tagging schemes and databases, such as ComicVine or GCD.  This makes conversion
- possible, however lossy it might be
-
+The goal of this class is to handle ALL the data that might come from
+various tagging schemes and databases, such as ComicVine or GCD.
+This makes conversion possible, however lossy it might be.
 """
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import utils
 
@@ -164,10 +160,8 @@ class GenericMetadata:
 
         self.overlayCredits(new_md.credits)
 
-        # TODO
-        # not sure if the tags and pages should broken down, or treated
-        # as whole lists....
-
+        # TODO: not sure if the tags and pages should broken down,
+        # or treated as whole lists....
         # For now, go the easy route, where any overlay
         # value wipes out the whole list
         if len(new_md.tags) > 0:
@@ -188,12 +182,12 @@ class GenericMetadata:
                 for r in reversed(self.credits):
                     if r['role'].lower() == c['role'].lower():
                         self.credits.remove(r)
-            # otherwise, add it!
+            # Otherwise, add it!
             else:
                 self.addCredit(c['person'], c['role'], primary)
 
     def setDefaultPageList(self, count):
-        # generate a default page list, with the first page marked as the cover
+        # Generate a default page list, with the first page marked as the cover
         for i in range(count):
             page_dict = dict()
             page_dict['Image'] = str(i)
@@ -202,7 +196,7 @@ class GenericMetadata:
             self.pages.append(page_dict)
 
     def getArchivePageIndex(self, pagenum):
-        # convert the displayed page number to the page index of the file in
+        # Convert the displayed page number to the page index of the file in
         # the archive
         if pagenum < len(self.pages):
             return int(self.pages[pagenum]['Image'])
@@ -210,7 +204,7 @@ class GenericMetadata:
             return 0
 
     def getCoverPageIndexList(self):
-        # return a list of archive page indices of cover pages
+        # Return a list of archive page indices of cover pages
         coverlist = []
         for p in self.pages:
             if 'Type' in p and p['Type'] == PageType.FrontCover:
@@ -229,7 +223,7 @@ class GenericMetadata:
         if primary:
             credit['primary'] = primary
 
-        # look to see if it's not already there...
+        # Look to see if it's not already there...
         found = False
         for c in self.credits:
             if (c['person'].lower() == person.lower() and
@@ -303,13 +297,13 @@ class GenericMetadata:
                 primary = " [P]"
             add_string("credit", c['role'] + ": " + c['person'] + primary)
 
-        # find the longest field name
+        # Find the longest field name
         flen = 0
         for i in vals:
             flen = max(flen, len(i[0]))
         flen += 1
 
-        # format the data nicely
+        # Format the data nicely
         outstr = ""
         fmt_str = u"{0: <" + str(flen) + "} {1}\n"
         for i in vals:

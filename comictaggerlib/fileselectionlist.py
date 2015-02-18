@@ -1,23 +1,19 @@
 # coding=utf-8
-"""
-A PyQt4 widget for managing list of comic archive files
-"""
+"""A PyQt4 widget for managing list of comic archive files"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import os
 import sys
@@ -74,7 +70,7 @@ class FileSelectionList(QWidget):
 
         self.twList.setColumnCount(6)
         #self.twlist.setHorizontalHeaderLabels (["File", "Folder", "CR", "CBL", ""])
-        # self.twList.horizontalHeader().setStretchLastSection(True)
+        #self.twList.horizontalHeader().setStretchLastSection(True)
         self.twList.currentItemChanged.connect(self.currentItemChangedCB)
 
         self.currentItem = None
@@ -160,7 +156,7 @@ class FileSelectionList(QWidget):
         if self.twList.currentRow() in row_list:
             if not self.modifiedFlagVerification(
                     "Remove Archive",
-                    "If you close this archive, data in the form will be lost.  Are you sure?"):
+                    "If you close this archive, data in the form will be lost. Are you sure?"):
                 return
 
         row_list.sort()
@@ -176,7 +172,7 @@ class FileSelectionList(QWidget):
         self.twList.currentItemChanged.connect(self.currentItemChangedCB)
 
         if self.twList.rowCount() > 0:
-            # since on a removal, we select row 0, make sure callback occurs if
+            # Since on a removal, we select row 0, make sure callback occurs if
             # we're already there
             if self.twList.currentRow() == 0:
                 self.currentItemChangedCB(self.twList.currentItem(), None)
@@ -187,11 +183,11 @@ class FileSelectionList(QWidget):
     def addPathList(self, pathlist):
 
         filelist = utils.get_recursive_filelist(pathlist)
-        # we now have a list of files to add
+        # We now have a list of files to add
 
         progdialog = QProgressDialog("", "Cancel", 0, len(filelist), self)
         progdialog.setWindowTitle("Adding Files")
-        # progdialog.setWindowModality(Qt.WindowModal)
+        #progdialog.setWindowModality(Qt.WindowModal)
         progdialog.setWindowModality(Qt.ApplicationModal)
         progdialog.show()
 
@@ -218,13 +214,13 @@ class FileSelectionList(QWidget):
                 ext = os.path.splitext(f)[1].lower()
                 if ext == ".rar" or ext == ".cbr":
                     checked = OptionalMessageDialog.msg(self, "No unrar tool",
-                                                        """
-                            It looks like you've tried to open at least one CBR or RAR file.<br><br>
-                            In order for ComicTagger to read this kind of file, you will have to configure
-                            the location of the unrar tool in the settings.  Until then, ComicTagger
-                            will not be able recognize these kind of files.
-                            """
-                                                        )
+                        """It looks like you've tried to open at least one CBR or RAR
+                        file.<br><br>In order for ComicTagger to read this kind of file,
+                        you will have to configure the location of the unrar tool in the
+                        settings. Until then, ComicTagger will not be able recognize
+                        these kind of files.
+                        """
+                        )
                     self.settings.show_no_unrar_warning = not checked
                     break
 
@@ -276,7 +272,7 @@ class FileSelectionList(QWidget):
     def addPathItem(self, path):
         path = unicode(path)
         path = os.path.abspath(path)
-        # print "processing", path
+        #print "processing", path
 
         if self.isListDupe(path):
             return self.getCurrentListRow(path)
@@ -410,11 +406,11 @@ class FileSelectionList(QWidget):
         if old_idx == new_idx:
             return
 
-        # don't allow change if modified
+        # Don't allow change if modified
         if prev is not None and new_idx != old_idx:
             if not self.modifiedFlagVerification(
                     "Change Archive",
-                    "If you change archives now, data in the form will be lost.  Are you sure?"):
+                    "If you change archives now, data in the form will be lost. Are you sure?"):
                 self.twList.currentItemChanged.disconnect(
                     self.currentItemChangedCB)
                 self.twList.setCurrentItem(prev)
@@ -442,15 +438,15 @@ class FileSelectionList(QWidget):
                 return False
         return True
 
-
 # Attempt to use a special checkbox widget in the cell.
 # Couldn't figure out how to disable it with "enabled" colors
+
 #w = QWidget()
 #cb = QCheckBox(w)
-# cb.setCheckState(Qt.Checked)
+#cb.setCheckState(Qt.Checked)
 #layout = QHBoxLayout()
-# layout.addWidget(cb)
-# layout.setAlignment(Qt.AlignHCenter)
-# layout.setMargin(2)
-# w.setLayout(layout)
+#layout.addWidget(cb)
+#layout.setAlignment(Qt.AlignHCenter)
+#layout.setMargin(2)
+#w.setLayout(layout)
 #self.twList.setCellWidget(row, 2, w)

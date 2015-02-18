@@ -1,23 +1,18 @@
-"""
-A python class to encapsulate the ComicBookInfo data
-"""
+"""A class to encapsulate the ComicBookInfo data"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
-
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import json
 from datetime import datetime
@@ -38,7 +33,7 @@ class ComicBookInfo:
 
         cbi = cbi_container['ComicBookInfo/1.0']
 
-        # helper func
+        # Helper func
         # If item is not in CBI, return None
         def xlate(cbi_entry):
             if cbi_entry in cbi:
@@ -63,15 +58,15 @@ class ComicBookInfo:
         metadata.criticalRating = xlate('rating')
         metadata.tags = xlate('tags')
 
-        # make sure credits and tags are at least empty lists and not None
+        # Make sure credits and tags are at least empty lists and not None
         if metadata.credits is None:
             metadata.credits = []
         if metadata.tags is None:
             metadata.tags = []
 
-        # need to massage the language string to be ISO
+        # Need to massage the language string to be ISO
         if metadata.language is not None:
-            # reverse look-up
+            # Reverse look-up
             pattern = metadata.language
             metadata.language = None
             for key in utils.getLanguageDict():
@@ -88,7 +83,7 @@ class ComicBookInfo:
         cbi_container = self.createJSONDictionary(metadata)
         return json.dumps(cbi_container)
 
-    # verify that the string actually contains CBI data in JSON format
+    # Verify that the string actually contains CBI data in JSON format
     def validateString(self, string):
 
         try:
@@ -106,12 +101,12 @@ class ComicBookInfo:
                          'lastModified': str(datetime.now()),
                          'ComicBookInfo/1.0': cbi}
 
-        # helper func
+        # Helper func
         def assign(cbi_entry, md_entry):
             if md_entry is not None:
                 cbi[cbi_entry] = md_entry
 
-        # helper func
+        # Helper func
         def toInt(s):
             i = None
             if type(s) in [str, unicode, int]:

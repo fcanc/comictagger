@@ -1,22 +1,18 @@
-"""
-A PyQT4 dialog to select specific series/volume from list
-"""
+"""A PyQT4 dialog to select specific series/volume from list"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import sys
 import time
@@ -249,7 +245,7 @@ class VolumeSelectionWindow(QtGui.QDialog):
             selector.setModal(True)
             selector.exec_()
             if selector.result():
-                # we should now have a list index
+                # We should now have a list index
                 found_match = selector.currentMatch()
 
         if found_match is not None:
@@ -326,7 +322,7 @@ class VolumeSelectionWindow(QtGui.QDialog):
             if self.search_thread.error_code == ComicVineTalkerException.RateLimit:
                 QtGui.QMessageBox.critical(
                     self,
-                    self.tr("Comic Vine Error"),
+                    self.tr("ComicVine Error"),
                     ComicVineTalker.getRateLimitMessage())
             else:
                 QtGui.QMessageBox.critical(
@@ -410,7 +406,7 @@ class VolumeSelectionWindow(QtGui.QDialog):
         self.volume_id, b = self.twList.item(
             curr.row(), 0).data(QtCore.Qt.UserRole).toInt()
 
-        # list selection was changed, update the info on the volume
+        # List selection has changed, update the info on the volume
         for record in self.cv_search_results:
             if record['id'] == self.volume_id:
                 if record['description'] is None:

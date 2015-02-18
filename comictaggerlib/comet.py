@@ -1,22 +1,18 @@
-"""
-A python class to encapsulate CoMet data
-"""
+"""A class to encapsulate CoMet data"""
 
-"""
-Copyright 2012-2014  Anthony Beville
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2012-2015 Anthony Beville
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 from datetime import datetime
 import zipfile
@@ -50,7 +46,7 @@ class CoMet:
         return header + ET.tostring(tree.getroot())
 
     def indent(self, elem, level=0):
-        # for making the XML output readable
+        # For making the XML output readable
         i = "\n" + level * "  "
         if len(elem):
             if not elem.text or not elem.text.strip():
@@ -67,22 +63,22 @@ class CoMet:
 
     def convertMetadataToXML(self, filename, metadata):
 
-        # shorthand for the metadata
+        # Shorthand for the metadata
         md = metadata
 
-        # build a tree structure
+        # Build a tree structure
         root = ET.Element("comet")
         root.attrib['xmlns:comet'] = "http://www.denvog.com/comet/"
         root.attrib['xmlns:xsi'] = "http://www.w3.org/2001/XMLSchema-instance"
         root.attrib[
             'xsi:schemaLocation'] = "http://www.denvog.com http://www.denvog.com/comet/comet.xsd"
 
-        # helper func
+        # Helper func
         def assign(comet_entry, md_entry):
             if md_entry is not None:
                 ET.SubElement(root, comet_entry).text = u"{0}".format(md_entry)
 
-        # title is manditory
+        # Title is mandatory
         if md.title is None:
             md.title = ""
         assign('title', md.title)
@@ -119,7 +115,7 @@ class CoMet:
 
         assign('coverImage', md.coverImage)
 
-        # need to specially process the credits, since they are structured
+        # Need to specially process the credits, since they are structured
         # differently than CIX
         credit_writer_list = list()
         credit_penciller_list = list()
@@ -129,7 +125,7 @@ class CoMet:
         credit_cover_list = list()
         credit_editor_list = list()
 
-        # loop thru credits, and build a list for each role that CoMet supports
+        # Loop thru credits, and build a list for each role that CoMet supports
         for credit in metadata.credits:
 
             if credit['role'].lower() in set(self.writer_synonyms):
@@ -160,10 +156,10 @@ class CoMet:
                 ET.SubElement(root, 'editor').text = u"{0}".format(
                     credit['person'])
 
-        # self pretty-print
+        # Self pretty-print
         self.indent(root)
 
-        # wrap it in an ElementTree instance, and save as XML
+        # Wrap it in an ElementTree instance, and save as XML
         tree = ET.ElementTree(root)
         return tree
 
@@ -217,7 +213,7 @@ class CoMet:
         if readingDirection is not None and readingDirection == "rtl":
             md.manga = "YesAndRightToLeft"
 
-        # loop for character tags
+        # Loop for character tags
         char_list = []
         for n in root:
             if n.tag == 'character':
@@ -242,7 +238,7 @@ class CoMet:
 
         return metadata
 
-    # verify that the string actually contains CoMet data in XML format
+    # Verify that the string actually contains CoMet data in XML format
     def validateString(self, string):
         try:
             tree = ET.ElementTree(ET.fromstring(string))
@@ -257,7 +253,7 @@ class CoMet:
     def writeToExternalFile(self, filename, metadata):
 
         tree = self.convertMetadataToXML(self, metadata)
-        # ET.dump(tree)
+        #ET.dump(tree)
         tree.write(filename, encoding='utf-8')
 
     def readFromExternalFile(self, filename):
